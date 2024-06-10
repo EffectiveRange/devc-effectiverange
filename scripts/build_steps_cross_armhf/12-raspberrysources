@@ -24,7 +24,26 @@ rsync -av --progress rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${
 
 echo "Downloading rpi libc source with patches"
 
-apt-get source libc6:${RPI_APT_ARCH}=${LIBC6_VERSION}
+apt-get source libc6:${RPI_APT_ARCH}
+
+CURRENT_GLIBC_VER="$(ls -1r glibc*.tar.xz | tail -1 )"
+
+# Dropping .debian.tar.xz extension
+CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%.*.*.*}"
+
+# Droppig glibc_ prefix
+CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER#glibc_}"
+
+# Dropping the last element from CURRENT_GLIBC_VER
+CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%+*}"
+
+LIBC6_BASE_VERSION="${LIBC6_VERSION%+*}"
+
+if [ "$LIBC6_BASE_VERSION" != "$CURRENT_GLIBC_VER" ]; then
+    echo "Base versions mismatch between libc versions $LIBC6_BASE_VERSION != $CURRENT_GLIBC_VER"
+    echo "This might cause runtime errors, please update the SKU definition file!"
+    exit 1
+fi
 
 
 #######################
