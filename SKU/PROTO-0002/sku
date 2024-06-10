@@ -1,7 +1,7 @@
 APT_SOURCES='"deb http://raspbian.raspberrypi.org/raspbian/ bullseye main contrib non-free rpi" "deb http://archive.raspberrypi.org/debian/ bullseye main" '
 RPI_KERNEL_HEADERS_VER=1:1.20230405-1
 RPI_KERNEL_HEADERS_SOURCE="http://archive.raspberrypi.org/debian bullseye/main armhf Packages"
-LIBC6_VER=2.31-14+rpt2+rpi1+deb11u9
+LIBC6_VER=2.31-13+rpt2+rpi1+deb11u9
 LIBC6_SOURCE="http://archive.raspberrypi.org/debian bullseye/main armhf Packages"
 PRETTY_NAME="Raspbian GNU/Linux 11 (bullseye)"
 NAME="Raspbian GNU/Linux"
