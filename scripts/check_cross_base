@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+
+ROOT_DIR="$(dirname $0)"
+
+BUILD_ARCH=$1
+SKU_DIR=$2
+
+CROSS_IMG_VER=$("$ROOT_DIR/gen_cross_hash" $BUILD_ARCH "$SKU_DIR" 2>/dev/null )
+
+if docker inspect effectiverange/$BUILD_ARCH-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1 
+then
+    echo 'false'
+    exit
+fi
+
+if docker manifest inspect  effectiverange/$BUILD_ARCH-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1
+then
+    echo 'false'
+    exit
+fi
+
+echo 'true'

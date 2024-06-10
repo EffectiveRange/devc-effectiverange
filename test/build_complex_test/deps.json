@@ -1,0 +1,20 @@
+{
+    "deps": [
+        "libstdc++6",
+        {
+            "name": "libpigpio1",
+            "arch": [
+                "armhf"
+            ]
+        }
+    ],
+    "build_deps": [
+        "libc6-dev",
+        {
+            "name": "libpigpio-dev",
+            "arch": [
+                "armhf"
+            ]
+        }
+    ]
+}

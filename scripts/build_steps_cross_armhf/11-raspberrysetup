@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+STEP_DESCRIPTION="Setting up raspberry repositories"
+source "$(dirname $0)/../build_common"
+
+for key in ${RPI_APT_KEYS[@]}
+do
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
+done
+
+for repo in "${RPI_APT_SOURCES[@]}"
+do
+add-apt-repository -s -y "${repo}"
+done
+
+# setup multiarch by adding current arch to sources list
+# sed -ri "s/^deb (\w+)/deb [arch=$(dpkg --print-architecture)] \1/g" /etc/apt/sources.list
+
+apt update

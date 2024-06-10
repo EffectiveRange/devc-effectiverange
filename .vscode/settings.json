@@ -1,0 +1,17 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.analysis.typeCheckingMode": "basic",
+    "cmake.sourceDirectory": "/home/fecjanky/dev/EffectiveRange-devc/test/build_exe_test",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./build_tools",
+        "-p",
+        "*test*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true
+}

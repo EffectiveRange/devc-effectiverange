@@ -1,0 +1,27 @@
+APT_SOURCES='"deb http://raspbian.raspberrypi.org/raspbian/ bullseye main contrib non-free rpi" "deb http://archive.raspberrypi.org/debian/ bullseye main" '
+RPI_KERNEL_HEADERS_VER=1:1.20230405-1
+RPI_KERNEL_HEADERS_SOURCE="http://archive.raspberrypi.org/debian bullseye/main armhf Packages"
+LIBC6_VER=2.31-13+rpt2+rpi1+deb11u9
+LIBC6_SOURCE="http://archive.raspberrypi.org/debian bullseye/main armhf Packages"
+PRETTY_NAME="Raspbian GNU/Linux 11 (bullseye)"
+NAME="Raspbian GNU/Linux"
+VERSION_ID="11"
+VERSION="11 (bullseye)"
+VERSION_CODENAME=bullseye
+ID=raspbian
+ID_LIKE=debian
+HOME_URL="http://www.raspbian.org/"
+SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+KERNEL_VER='6.1.21+'
+MARCH='armv6l'
+LIBC_INFO='libc6/oldstable,now 2.31-13+rpt2+rpi1+deb11u9 armhf [installed]'
+LIBCPP_INFO='libstdc++6/oldstable,now 10.2.1-6+rpi1 armhf [installed]'
+BINUTILS_INFO='binutils/oldstable,now 2.35.2-2+rpi1 armhf [installed,automatic]'
+GCC_VER=10.2.1
+GCC_MACHINE="arm-linux-gnueabihf"
+GCC_CONFIG="-v --with-pkgversion='Raspbian 10.2.1-6+rpi1' --with-bugurl=file:///usr/share/doc/gcc-10/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-10 --program-prefix=arm-linux-gnueabihf- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libitm --disable-libquadmath --disable-libquadmath-support --enable-plugin --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-sjlj-exceptions --with-arch=armv6 --with-fpu=vfp --with-float=hard --disable-werror --enable-checking=release --build=arm-linux-gnueabihf --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf"
+LD_COMPRESSED_DEBUGINFO=''
+BINUTILS_GOLD_LINKER=
+BINUTILS_GOLD_LINKER='yes'
+LD_DEFAULT_GOLD=''

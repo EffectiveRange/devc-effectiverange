@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+STEP_DESCRIPTION="creating cross cmake toolchain file and wrapper"
+source "$(dirname $0)/../build_common"
+
+
+mkdir -p /usr/share/cmake/
+cat > /usr/share/cmake/toolchain.cmake  << EOF
+
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_VERSION $RPI_KERNEL_VERSION)
+set(CMAKE_SYSTEM_PROCESSOR $LINUX_ARCH)
+set(CMAKE_C_COMPILER_TARGET $LINUX_ARCH)
+set(CMAKE_CXX_COMPILER_TARGET $LINUX_ARCH)
+
+set(CMAKE_SYSROOT "/var/chroot/buildroot")
+set(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_INSTALL_PREFIX \${CMAKE_SYSROOT} CACHE PATH "..." FORCE)
+
+set(CMAKE_AR $TARGET-ar)
+set(CMAKE_C_COMPILER $TARGET-gcc)
+set(CMAKE_CXX_COMPILER $TARGET-g++)
+
+set(CMAKE_LIBRARY_ARCHITECTURE  $TARGET)
+set(PKG_CONFIG_EXECUTABLE xpkg-config)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE $RPI_APT_ARCH)
+EOF
+
+echo "CMAKE_TOOLCHAIN_FILE=/usr/share/cmake/toolchain.cmake" >> /etc/environment
+echo "CMAKE_GENERATOR=Ninja" >> /etc/environment
+
+cat > /usr/bin/xcmake << EOF
+#!/bin/bash
+
+cmake --toolchain /usr/share/cmake/toolchain.cmake --install-prefix /var/chroot/buildroot "\$@"
+
+EOF
+
+chmod 755 /usr/bin/xcmake
+

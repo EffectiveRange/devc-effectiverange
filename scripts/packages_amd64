@@ -1,0 +1,8 @@
+# The union of the packages below will be installed, but at the end of
+# the image build the ones listed under PACKAGES_TO_REMOVE will be removed
+
+# add in kernel headers
+if [[ $(uname -r) != *"WSL2"* ]]
+then
+PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL linux-headers-$(uname -r)"
+fi

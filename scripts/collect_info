@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+HOST=$1
+if [ -z "$HOST" ]
+then
+ echo "Hostname missing: usage $0 <Hostname>"
+ exit 1
+fi
+
+cat $(dirname $0)/gen_os_info  | ssh  -q $HOST | sed '0,/^!!!!STARTOFINFO!!!!$/d'

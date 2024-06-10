@@ -1,0 +1,12 @@
+
+add-apt-repository -y "deb [arch=armhf] http://archive.raspberrypi.org/debian bullseye main"
+
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+
+apt download raspberrypi-kernel-headers:armhf=1:1.20230405-1
+
+dpkg --force-all --root=/usr/arm-linux-gnueabihf/ -i raspberrypi-kernel-headers_1%3a1.20230405-1_armhf.deb 
+# copy syscall files for vanilla kernel sources
+find . -name syscall.tbl -exec cp {} /usr/arm-linux-gnueabihf/usr/src/linux-headers-6.1.21+/{} \;
+
+add-apt-repository -y -r "deb [arch=armhf] http://archive.raspberrypi.org/debian bullseye main"

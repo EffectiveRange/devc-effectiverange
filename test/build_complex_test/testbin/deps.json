@@ -1,0 +1,9 @@
+{
+    "deps": [
+        "libncurses6"
+    ],
+    "build_deps": [
+        "libc6-dev",
+        "libncurses-dev"
+    ]
+}

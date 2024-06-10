@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+STEP_DESCRIPTION="Download packages"
+source "$(dirname $0)/../build_common"
+
+export http_proxy=$HTTP_PROXY https_proxy=$HTTP_PROXY ftp_proxy=$HTTP_PROXY
+WGET_CMD="wget $WGET_IP_VER "
+$WGET_CMD  -nc https://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.xz
+$WGET_CMD -nc https://ftp.gnu.org/gnu/gcc/$GCC_WITH_VER/$GCC_WITH_VER.tar.xz
+$WGET_CMD -nc https://www.kernel.org/pub/linux/kernel/$LINUX_KERNEL_VERSION_URL/linux-$LINUX_KERNEL_VERSION.tar.xz
+$WGET_CMD -nc https://ftp.gnu.org/gnu/mpfr/mpfr-$MPFR_VERSION.tar.xz
+$WGET_CMD -nc https://ftp.gnu.org/gnu/gmp/gmp-$GMP_VERSION.tar.xz
+$WGET_CMD -nc https://ftp.gnu.org/gnu/mpc/mpc-$MPC_VERSION.tar.gz
+$WGET_CMD -nc ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-$ISL_VERSION.tar.bz2
+$WGET_CMD -nc ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-$CLOOG_VERSION.tar.gz
+mkdir -p pkgFix
+cd pkgFix
+$WGET_CMD -nc https://ftp.gnu.org/gnu/glibc/glibc-$GLIBC_VERSION.tar.xz
+tar -xf glibc-$GLIBC_VERSION.tar.xz
+cd ..
+
+#######################
+
+echo "Extracting everything"
+for f in *.tar.xz ; do 
+echo "inflating $f"
+tar -xf $f 
+done
+for f in *.tar.gz ; do 
+echo "inflating $f"
+tar -xzf $f
+done
+for f in *.tar.bz2 ; do 
+echo "inflating $f"
+tar -xjf $f
+done
+
+
+
+
+#######################
+echo "Making symbolic links"
+cd $GCC_WITH_VER
+ln -sf `ls -1d ../mpfr-*/` mpfr
+ln -sf `ls -1d ../gmp-*/` gmp
+ln -sf `ls -1d ../mpc-*/` mpc
+ln -sf `ls -1d ../isl-*/` isl
+ln -sf `ls -1d ../cloog-*/` cloog
+cd ..

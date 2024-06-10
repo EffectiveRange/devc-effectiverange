@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+{ echo 'tzdata tzdata/Areas select Etc'; echo 'tzdata tzdata/Zones/Etc select UTC'; } | debconf-set-selections
+
+ROOT_DIR="$(dirname $0)"
+
+BUILD_ARCH=$1
+shift 1
+
+. "$ROOT_DIR/packages"
+
+if [ -e "$ROOT_DIR/packages_$BUILD_ARCH" ]
+then
+. "$ROOT_DIR/packages_$BUILD_ARCH"
+fi
+
+apt-get update && apt-get upgrade -y
+
+apt-get install -y $PACKAGES_TO_INSTALL
+
+# Install latest clang tooling
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh 
+chmod +x /tmp/llvm.sh 
+/tmp/llvm.sh  
+CLANGD_EXE=$(ls -1 /usr/bin/clangd-* | sort -hr | head -n1)
+ln -sfv $CLANGD_EXE /usr/bin/clangd
+
+mkdir -p /tmp/build
+
+cd /tmp/build 
+
+for step in $( ls -1 "$ROOT_DIR/build_steps_$BUILD_ARCH/" | sort -n ) 
+do
+/bin/bash "$ROOT_DIR/build_steps_$BUILD_ARCH/$step" /home/crossbuilder/sku "$@"
+done
+
+
+# Clean up
+rm -rf /tmp/build 
+
+if [ "$KEEP_BUILD_ARTIFACTS" == "FALSE" ]
+then
+
+apt-get clean 
+
+if  [ -n "$PACKAGES_TO_REMOVE" ]
+then
+apt-get remove -y $PACKAGES_TO_REMOVE
+fi
+
+apt-get autoremove -y 
+
+rm -rf /var/lib/apt/lists/*
+
+fi
+
+
+
+
+
+

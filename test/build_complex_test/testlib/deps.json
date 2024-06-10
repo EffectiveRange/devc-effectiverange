@@ -1,0 +1,8 @@
+{
+    "deps": [
+        "libc6"
+    ],
+    "build_deps": [
+        "libc6-dev"
+    ]
+}

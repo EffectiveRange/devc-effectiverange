@@ -1,0 +1,3 @@
+GLIBC_MAKE_FLAGS="CFLAGS-s_sincos.c+=-fno-builtin-sincosl CFLAGS-s_modf.c+=-fno-builtin-modfl"
+RPI_APT_ARCHIVE_KEY=82B129927FA3303E
+RPI_APT_KEY=9165938D90FDDD2E

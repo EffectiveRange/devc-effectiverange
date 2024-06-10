@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -x
+STEP_DESCRIPTION="Adding staging path include dir to library search path through gcc specs"
+source "$(dirname $0)/../build_common"
+
+GCC_SPEC_FILE="${INSTALL_PATH}/lib/gcc/${TARGET}/${GCC_MAJOR_VERSION}/specs"
+
+echo "Gcc spec file is : $GCC_SPEC_FILE"
+
+if [ ! -d "$(dirname ${GCC_SPEC_FILE})" ]
+then
+echo "creating gcc specs directory"
+mkdir -p "$(dirname ${GCC_SPEC_FILE})"
+fi
+
+${TARGET}-gcc -dumpspecs > $GCC_SPEC_FILE
+
+
+# add buildroot directory architecture dependent includes to the default search paths and use -nostdinc for disregarding host search dirs
+# TODO: automate extraction from buildroot
+sed -ri "/^\*cpp:/{n;s|.*|\0 -nostdinc -isystem /var/chroot/buildroot/usr/include/c++/${GCC_MAJOR_VERSION} -isystem /var/chroot/buildroot/usr/include/${TARGET}/c++/${GCC_MAJOR_VERSION} -isystem  /var/chroot/buildroot/usr/include/c++/${GCC_MAJOR_VERSION}/backward -isystem /var/chroot/buildroot/usr/lib/gcc/${TARGET}/${GCC_MAJOR_VERSION}/include -isystem /var/chroot/buildroot/usr/local/include  -isystem /var/chroot/buildroot/usr/include/${TARGET} -isystem /var/chroot/buildroot/usr/include/ -include /var/chroot/buildroot/usr/include/stdc-predef.h |}"   $GCC_SPEC_FILE
+
+

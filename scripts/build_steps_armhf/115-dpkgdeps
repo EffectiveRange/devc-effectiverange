@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+STEP_DESCRIPTION="setting up dpkgdeps ERBuild cmake module"
+source "$(dirname $0)/../build_common"
+
+CMAKE_VERSION=$(cmake --version | grep 'cmake version' | sed -r 's/cmake version ([0-9]+\.[0-9]+).*/\1/g')
+
+cp -vf /home/crossbuilder/build_tools/ERBuild.cmake /usr/share/cmake-$CMAKE_VERSION/Modules/ || true
+
+pip install -r /home/crossbuilder/build_tools/requirements.txt
+
+install -v /home/crossbuilder/build_tools/dpkgdeps /usr/bin/
+
+# create debian directory for packages
+mkdir -p /opt/debs
+chmod 777 /opt/debs

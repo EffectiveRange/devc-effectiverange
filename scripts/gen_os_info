@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+dump_apt_version() { 
+echo "${1}_VER=$(apt show $2  2>&1 | grep Version | cut -d' '  -f2)" 
+echo "${1}_SOURCE=\"$(apt show $2  2>&1 | grep APT-Sources | cut -d' '  -f2-)\"" 
+} 
+
+echo "!!!!STARTOFINFO!!!!"
+APT_SOURCES="$(grep -rE '^deb ' /etc/apt/ | cut -d':' -f2- | sed 's/^/"/;s/$/"/' | tr '\n' ' ')"
+echo "APT_SOURCES='${APT_SOURCES}'"
+dump_apt_version RPI_KERNEL_HEADERS raspberrypi-kernel-headers
+dump_apt_version LIBC6 libc6
+cat /etc/os-release
+echo "KERNEL_VER='$(uname -r)'"
+echo "MARCH='$(uname -m)'"
+echo "LIBC_INFO='$(apt list --installed libc6 2>/dev/null | tail -1)'"
+echo "LIBCPP_INFO='$(apt list --installed libstdc++6 2>/dev/null | tail -1)'"
+echo "BINUTILS_INFO='$(apt list --installed binutils 2>/dev/null | tail -1)'"
+echo GCC_VER=$(gcc -dumpfullversion -dumpversion)
+echo GCC_MACHINE="\"$(gcc -dumpmachine 2>&1)\""
+echo GCC_CONFIG="\"$(gcc -v 2>&1 | grep Configured | sed -r 's/^.*?configure (-.*)/\1/')\""
+TEMP_FILE=$(mktemp)
+cat <<EOF > $TEMP_FILE
+int main() {}
+EOF
+gcc -x c -g  -o $TEMP_FILE.out $TEMP_FILE 2>&1 > /dev/null
+echo "LD_COMPRESSED_DEBUGINFO='$(readelf -t $TEMP_FILE.out | grep -A2 debug_abbrev  | tail -1 | grep COMPRESSED)'"
+echo "BINUTILS_GOLD_LINKER="
+[ -e /usr/bin/gold ] && echo "BINUTILS_GOLD_LINKER='yes'"
+echo "LD_DEFAULT_GOLD='$(ld --version | grep gold)'"

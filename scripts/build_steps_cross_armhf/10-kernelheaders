@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+STEP_DESCRIPTION="Linux Kernel Headers"
+source "$(dirname $0)/../build_common"
+
+echo "Moving kernel sources to final location"
+
+mkdir -p "$INSTALL_PATH/src/"
+[ ! -d  "${LINUX_SRC_PATH}" ]  && cp -rv linux-$LINUX_KERNEL_VERSION  "${LINUX_SRC_PATH}"
+
+pushd "${LINUX_SRC_PATH}"
+make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$INSTALL_PATH/$TARGET headers_install
+popd

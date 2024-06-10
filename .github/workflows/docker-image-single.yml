@@ -1,0 +1,113 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Publish Docker image
+
+on:
+  workflow_call:
+    inputs:
+      arch:
+        required: true
+        type: string
+      sku:
+        required: false
+        type: string
+        default: "PROTO-0002"
+      base_repo:
+        required: false
+        type: string
+        default: "ubuntu"
+      base_ver:
+        required: false
+        type: string
+        default: "22.04"
+
+jobs:
+  build_base_image:
+    name: Push Docker base image to dockerhub
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: install qemu tools
+        run: |
+          sudo apt update
+          sudo apt install -y qemu-user-static qemu-utils binfmt-support
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME  }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            effectiverange/${{ inputs.arch }}-tools-base
+          flavor: |
+            latest=true
+      - name: Build and push Docker images
+        id: dbuild
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          push: true
+          build-args: |
+            BASE_IMAGE_REPO=${{ inputs.base_repo }}
+            BASE_IMAGE_VER=${{ inputs.base_ver }}
+            SKU_DIR=SKU/${{ inputs.sku }}
+            BUILD_ARCH=${{ inputs.arch }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+    outputs:
+      imageid: ${{ steps.dbuild.outputs.imageid }}
+      imagever: ${{ steps.meta.outputs.version }}
+
+  build_devc_image:
+    needs: build_base_image 
+    name: Build and push devc image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: qemu-user-static qemu-utils binfmt-support    
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME  }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            effectiverange/er-devc-${{ inputs.arch }}
+          flavor: |
+            latest=true
+      - name: Build and push devc Docker images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          file: "Dockerfile-devc"
+          build-args: |
+            BASE_IMAGE_REPO=effectiverange/${{ inputs.arch }}-tools-base
+            BASE_IMAGE_VER=${{ needs.build_base_image.outputs.imagever }}
+            DEVC_ARCH=${{ inputs.arch }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+        

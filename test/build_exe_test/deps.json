@@ -1,0 +1,15 @@
+{
+    "deps": [
+        "openssl",
+        "libstdc++6",
+        "libc6"
+    ],
+    "build_deps": [
+        "libc6-dev",
+        "libssl-dev"
+    ],
+    "ignore_deps": [
+        "debconf-2.0",
+        "libc-dev"
+    ]
+}

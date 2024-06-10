@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+STEP_DESCRIPTION="creating cross pkg-config wrapper"
+source "$(dirname $0)/../build_common"
+
+
+cat > /usr/bin/xpkg-config <<EOF
+#!/bin/bash
+schroot -c buildroot -d /  -- pkg-config --define-variable=prefix='/var/chroot/buildroot/usr' "\$@"
+EOF
+
+chmod 755 /usr/bin/xpkg-config

@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+trap 'previous_command=$this_command; this_command=$BASH_COMMAND' DEBUG
+trap 'echo FAILED COMMAND: $previous_command' EXIT
+
+#-------------------------------------------------------------------------------------------
+# This script will download packages for, configure, build and install a GCC cross-compiler.
+# Customize the variables (INSTALL_PATH, TARGET, etc.) to your liking before running.
+# If you get an error and need to resume the script from some point in the middle,
+# just delete/comment the preceding lines before running it again.
+#
+# See: http://preshing.com/20141119/how-to-build-a-gcc-cross-compiler
+#-------------------------------------------------------------------------------------------
+
+apt install -y bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev software-properties-common zlib1g libz-dev rsync build-essential g++ make gawk python3 sed
+
+mkdir -p /tmp/build
+
+cd /tmp/build
+
+export CT_BUILD_ROOT_DIR="$(pwd)"
+
+ROOT_DIR="$(dirname $0)"
+
+TMP_FILE="$(mktemp)"
+
+"$ROOT_DIR/gen_vars" "$@" > "$TMP_FILE"
+
+. "$TMP_FILE"
+
+
+export PATH=$INSTALL_PATH/bin:$PATH
+
+
+for step in $( ls -1 "$ROOT_DIR/build_steps_cross_armhf/" | sort -n ) 
+do
+/bin/bash "$ROOT_DIR/build_steps_cross_armhf/$step" "$@"
+done
+
+set +e
+
+echo "Stripping unneeded symbols ..."
+
+find "$INSTALL_PATH" -wholename "*$TARGET*"  -type f -executable -exec strip --strip-unneeded {} \;
+find "$INSTALL_PATH" -wholename "*$TARGET*"  -type f -executable -exec ${PROGRAM_PREFIX}strip --strip-unneeded {} \;
+
+set -e
+
+if [ "$KEEP_BUILD_ARTIFACTS" == "FALSE" ]
+then
+
+rm -rf /tmp/build
+
+apt-get clean 
+
+if  [ -n "$PACKAGES_TO_REMOVE" ]
+then
+apt-get remove -y $PACKAGES_TO_REMOVE
+fi
+
+apt-get autoremove -y 
+
+rm -rf /var/lib/apt/lists/*
+
+fi
+
+trap - EXIT
+echo 'Success!'
+
+

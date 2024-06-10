@@ -1,0 +1,5 @@
+# The union of the packages below will be installed, but at the end of
+# the image build the ones listed under PACKAGES_TO_REMOVE will be removed
+
+# NOTE: qemu + binfmt required for build chroot 
+PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL qemu-user-static qemu-utils binfmt-support"

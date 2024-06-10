@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+SKU_DIR="$(echo $1 | sed -r  's|/$\s*||')"
+if [ ! -d "$SKU_DIR" -o -z "$SKU_DIR" ]
+then
+ >&2 echo "Non-existent input dir, usage $0 <SKU dir> [..args]"
+ exit 1
+fi
+
+shift 1
+set -a
+. "$SKU_DIR/sku"
+if [ -f "$SKU_DIR/sku.extra" ]
+then 
+ . "$SKU_DIR/sku.extra"
+fi
+set +a
+
+if [ -d "$SKU_DIR/patch" ]
+then 
+PATCH_DIR="--patchdir='$SKU_DIR/patch'"
+fi
+
+python3 "$(dirname $0)/gen_vars.py" --skudir="$SKU_DIR" $PATCH_DIR "$@"
+

@@ -1,0 +1,52 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Release
+
+on:
+  push:
+    tags: 
+      - "v*.*.*"
+
+jobs:
+  call_build_cross_base-armhf:
+    uses: ./.github/workflows/docker-image-cross.yml
+    secrets: inherit
+    with:
+      arch: "armhf"
+
+  call_build_and_publish_images-armhf:
+    needs: call_build_cross_base-armhf
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "armhf"
+      base_repo: "effectiverange/armhf-tools-cross"
+      base_ver:  ${{needs.call_build_cross_base-armhf.outputs.imagever}}
+  
+  call_build_and_publish_images-amd64:
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "amd64"
+
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      discussions: write
+    needs: [call_build_and_publish_images-armhf,call_build_and_publish_images-amd64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v1
+
+

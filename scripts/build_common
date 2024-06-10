@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+ROOT_DIR="$(dirname "$BASH_SOURCE")"
+
+load_vars() {
+TMP_FILE="$(mktemp)"
+"$ROOT_DIR/gen_vars" "$@" > "$TMP_FILE"
+source "$TMP_FILE"
+rm -f "$TMP_FILE"
+}
+
+load_vars "$@"
+
+# Shared variables 
+LINUX_SRC_PATH="$INSTALL_PATH/src/linux-${RPI_KERNEL_VERSION}"
+GCC_WITH_VER="gcc-$GCC_VERSION"
+#
+echo "Step $(basename $0): ${STEP_DESCRIPTION}"
+
+

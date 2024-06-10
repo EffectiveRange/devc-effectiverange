@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+SKU_ID="$1"
+HOME_DIR="/home/crossbuilder"
+if [ -z "$SKU_ID" ]
+then
+echo "Missing SKU ID."
+exit 1
+fi
+
+for d in "scripts" "test"  "build_tools"
+do
+    if [ -d "$HOME_DIR/$d" -o ! -e "$HOME_DIR/$d"  ]
+    then 
+        rm -rf "$HOME_DIR/$d"
+        ln -v -s "/devc/$d" "$HOME_DIR/$d"
+    fi
+done
+
+if  [ -d "/devc/SKU/$1" ]
+then
+    rm -rf "$HOME_DIR/sku"
+    ln -v -s "/devc/SKU/$1" "$HOME_DIR/sku"
+else
+    echo "can't link in devc using /devc/SKU/$1"
+fi
+
+ln -f -v -s /devc/build_tools/dpkgdeps /usr/bin/dpkgdeps
+ln -f -v -s /devc/build_tools/ERBuild.cmake $(find /usr/share/ -name ERBuild.cmake | head -n1)

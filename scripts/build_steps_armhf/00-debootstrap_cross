@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+STEP_DESCRIPTION="Debootstrap buildroot"
+source "$(dirname $0)/../build_common"
+
+set -o pipefail
+mkdir -p /var/chroot/
+rm -rf /var/chroot/buildroot
+wget -qO -  ${RASPBIAN_SOURCE}/raspbian.public.key  | gpg --import -
+debootstrap --arch=${RPI_APT_ARCH} --keyring=/root/.gnupg/pubring.kbx --verbose --foreign --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot ${RASPBIAN_SOURCE}/raspbian/
+chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage

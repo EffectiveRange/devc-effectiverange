@@ -1,0 +1,20 @@
+version: '3'
+services:
+  dev-container-armhf: &dev-container
+    container_name: dev-container-armhf
+    image: effectiverange/er-devc-armhf:latest
+    stdin_open: true
+    tty: true
+    privileged: true
+    volumes:
+      - ../EffectiveRange-devc:/home/crossbuilder/project/EffectiveRange-devc
+      - ../EffectiveRange:/home/crossbuilder/project/EffectiveRange
+      - ../pi-gen:/home/crossbuilder/project/pi-gen
+  dev-container-arm64:
+    <<: *dev-container
+    container_name: dev-container-arm64
+    image: effectiverange/er-devc-arm64:latest
+  dev-container-amd64:
+    <<: *dev-container
+    container_name: dev-container-amd64
+    image: effectiverange/er-devc-amd64:latest
