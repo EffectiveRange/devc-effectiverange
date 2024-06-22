@@ -22,11 +22,11 @@ on:
       base_repo:
         required: false
         type: string
-        default: "ubuntu"
+        default: "debian"
       base_ver:
         required: false
         type: string
-        default: "22.04"
+        default: "bullseye-slim"
 
 jobs:
   build_base_image:
