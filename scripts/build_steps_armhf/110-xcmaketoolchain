@@ -28,6 +28,10 @@ set(CMAKE_AR $TARGET-ar)
 set(CMAKE_C_COMPILER $TARGET-gcc)
 set(CMAKE_CXX_COMPILER $TARGET-g++)
 
+# HACK: this is a known CMake issue https://gitlab.kitware.com/cmake/cmake/-/issues/22678, only workaround that works
+set(CMAKE_EXE_LINKER_FLAGS "\${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath-link,/var/chroot/buildroot/lib/$TARGET/ -Wl,-rpath-link,/var/chroot/buildroot/usr/lib/$TARGET/")
+
+
 set(CMAKE_LIBRARY_ARCHITECTURE  $TARGET)
 set(PKG_CONFIG_EXECUTABLE xpkg-config)
 
