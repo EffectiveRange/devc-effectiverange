@@ -8,7 +8,7 @@ ARG DEVC_ARCH=$DEVC_ARCH
 RUN apt update && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt upgrade -y && \
-    apt install -y gcc wget cmake python3 python3-pip inetutils-ping openssh-client pkg-config dpkg-dev nano git sudo gh
+    apt install -y gcc wget cmake python3 python3-pip inetutils-ping openssh-client pkg-config dpkg-dev nano git sudo
 
 
 # Set up start script
