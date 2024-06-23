@@ -142,7 +142,7 @@ def run_in_buildroot(target_arch: str, /, *args):
 def run_in_buildroot_with_lock(target_arch: str, /, *args):
     lock = filelock.FileLock("/tmp/dpkgdeps.lock")
     with lock:
-        run_in_buildroot(*args)
+        run_in_buildroot(target_arch, *args)
 
 
 def install_in_buildroot(args, allDeps):
