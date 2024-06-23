@@ -2,8 +2,12 @@
 set -e  -o pipefail
 
 STEP_DESCRIPTION="testing build and packaging toolchain"
-
+if [ -f /usr/share/cmake/toolchain.cmake ];
+then
 DEB_ARCH=$(grep CPACK_DEBIAN_PACKAGE_ARCHITECTURE /usr/share/cmake/toolchain.cmake  | sed -r 's/.*CPACK_DEBIAN_PACKAGE_ARCHITECTURE (\w+).*/\1/g')
+else
+DEB_ARCH=$(dpkg --print-architecture)
+fi
 
 TEST_DIR=$(dirname $0)
 

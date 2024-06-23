@@ -15,6 +15,9 @@ chroot /var/chroot/buildroot apt update
 # Fix blocking netbase install
 chroot /var/chroot/buildroot apt install -y --no-install-recommends -o Dpkg::Options::="--force-confnew" netbase
 
+# NOTE: this cmake install version will differ from the host cmake version
+# compiling cmake from source is possible, but takes 30 minutes, in case there's an error about this
+# then this compilation will need to take place as part of the devc build
 # Install base packages
 chroot /var/chroot/buildroot apt install -y --no-install-recommends cmake ninja-build git debhelper devscripts equivs dbus
 

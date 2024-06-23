@@ -4,10 +4,11 @@
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
 
-STEP_DESCRIPTION="Setup gdb pretty printers"
+set -e
+
+STEP_DESCRIPTION="creating cross cmake toolchain file and wrapper"
 source "$(dirname $0)/../build_common"
 
-mkdir -p /usr/share/gdb/auto-load/var/chroot/buildroot
-cd /usr/share/gdb/auto-load/var/chroot/buildroot
-ln -s ../../../lib ./lib
-ln -s ../../../usr ./usr
+echo "CMAKE_GENERATOR=Ninja" >> /etc/environment
+
+ln -s -f -v $(which cmake) /usr/bin/xcmake

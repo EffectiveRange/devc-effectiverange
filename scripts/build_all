@@ -31,6 +31,10 @@ chmod +x /tmp/llvm.sh
 CLANGD_EXE=$(ls -1 /usr/bin/clangd-* | sort -hr | head -n1)
 ln -sfv $CLANGD_EXE /usr/bin/clangd
 
+# Install latest stable CMake 
+wget -O - https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh > /tmp/cmake_install.sh
+/bin/bash /tmp/cmake_install.sh --skip-license  --prefix=/usr
+
 mkdir -p /tmp/build
 
 cd /tmp/build 
