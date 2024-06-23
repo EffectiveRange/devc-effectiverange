@@ -111,8 +111,19 @@ def print_deb_deps(deps: dict, arch: str):
     print(deb_deps_str(deps, arch))
 
 
-def run_in_buildroot(*args):
-    cmd = ["schroot", "-d", "/", "-u", "root", "-c", "buildroot", "--", *args]
+def run_in_buildroot(target_arch: str, /, *args):
+    if build_arch != target_arch:
+        cmd = ["schroot", "-d", "/", "-u", "root", "-c", "buildroot", "--", *args]
+    elif os.geteuid() == 0:
+        cmd = args
+    else:
+        try:
+            subprocess.check_call(["sudo", "-n", "true"])
+        except subprocess.CalledProcessError:
+            raise RuntimeError(
+                "sudo is not available or password-less sudo is not configured "
+            )
+        cmd = ["sudo", "--", *args]
     p = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -128,7 +139,7 @@ def run_in_buildroot(*args):
         raise subprocess.CalledProcessError(ret, cmd)
 
 
-def run_in_buildroot_with_lock(*args):
+def run_in_buildroot_with_lock(target_arch: str, /, *args):
     lock = filelock.FileLock("/tmp/dpkgdeps.lock")
     with lock:
         run_in_buildroot(*args)
@@ -136,9 +147,10 @@ def run_in_buildroot_with_lock(*args):
 
 def install_in_buildroot(args, allDeps):
     pkgs = [d.specStr() for d in allDeps]
-    run_in_buildroot_with_lock("apt", "update")
+    run_in_buildroot_with_lock(args.arch, "apt", "update")
 
     run_in_buildroot_with_lock(
+        args.arch,
         "apt",
         "install",
         "-y",
