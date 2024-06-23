@@ -18,6 +18,7 @@ rm -f "$TMP_FILE"
 load_vars "$@"
 
 # Shared variables 
+LINUX_SRC_PATH="$INSTALL_PATH/src/linux-${RPI_KERNEL_VERSION}"
 GCC_WITH_VER="gcc-$GCC_VERSION"
 #
 echo "Step $(basename $0): ${STEP_DESCRIPTION}"

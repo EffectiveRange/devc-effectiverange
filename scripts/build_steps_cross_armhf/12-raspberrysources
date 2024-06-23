@@ -9,6 +9,19 @@ source "$(dirname $0)/../build_common"
 
 echo "Downloading raspberry packages"
 
+mkdir -p rpi-deb
+cd rpi-deb
+
+apt download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}
+
+dpkg --force-all --root=$(pwd)/../rpi-kernel -i raspberrypi-kernel-headers*.deb 
+
+cd ..
+
+echo "Syncing rpi kernel to vanilla source"
+rsync -av --progress rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
+
+
 echo "Downloading rpi libc source with patches"
 
 apt-get source libc6:${RPI_APT_ARCH}
