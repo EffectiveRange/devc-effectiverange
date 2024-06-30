@@ -6,7 +6,8 @@
             "arch": [
                 "armhf"
             ]
-        }
+        },
+        "libprotobuf23"
     ],
     "build_deps": [
         "libc6-dev",
@@ -15,6 +16,11 @@
             "arch": [
                 "armhf"
             ]
-        }
+        },
+        {
+            "name": "protobuf-compiler",
+            "hostinstall": true
+        },
+        "libprotobuf-dev"
     ]
 }

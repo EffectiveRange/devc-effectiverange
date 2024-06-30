@@ -66,6 +66,7 @@ dpkg -c /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/lo
 dpkg -I /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "Depends:.*libncurses6.*$"
 dpkg -I /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "Depends:.*libstdc\+\+6.*$"
 dpkg -I /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "Depends:.*libc6.*$"
+dpkg -I /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "Depends:.*libprotobuf.*$"
 
 # Test for complex dep specification
 if [ $DEB_ARCH = "armhf" ]; then
