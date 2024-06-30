@@ -129,8 +129,8 @@ macro(ER_PACK)
   
   set(CPACK_PACKAGE_DIRECTORY "/opt/debs")
 
-  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Global Scope Kft <info@globalscope.info>")
-  set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://globalscope.info/")
+  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Effective Range Kft. <info@effective-range.com>")
+  set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://www.effective-range.com/")
 
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "${${PROJECT_NAME}_DEBDEPS}" )
 

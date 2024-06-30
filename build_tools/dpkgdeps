@@ -20,7 +20,7 @@ import re
 import subprocess
 import contextlib
 import os
-from typing import Optional, Union
+from typing import Optional, Union, Callable
 from pathlib import Path as path
 
 
@@ -46,18 +46,26 @@ class Dependency:
     name: str
     ver: Optional[str]
     arch: Optional[str]
+    hostinstall: bool
 
     def specStr(self, arch=True):
         archStr = f":{self.arch}" if self.arch and arch else ""
         verStr = f"={self.ver}" if self.ver else ""
         return f"{self.name}{archStr}{verStr}"
 
+    def retarget(self, target_arch: str):
+        if target_arch == self.arch:
+            return self
+        return Dependency(self.name, self.ver, target_arch, self.hostinstall)
+
     @staticmethod
-    def Parse(s: str, target: str):
+    def Parse(s: str, target: str, *, hostinstall=False):
         m = depRe.match(s)
         assert m is not None
         res = m.groupdict()
-        return Dependency(res["name"], res.get("ver", None), res.get("arch") or target)
+        return Dependency(
+            res["name"], res.get("ver", None), res.get("arch") or target, hostinstall
+        )
 
 
 build_arch = (
@@ -70,10 +78,10 @@ build_arch = (
 def parseDependency(entry: Union[str, dict], arch: str) -> Optional[Dependency]:
     if isinstance(entry, str):
         return Dependency.Parse(entry.strip(), arch)
-    if (isinstance(entry["arch"], str) and arch == entry["arch"]) or (
-        arch in entry["arch"]
-    ):
-        return Dependency.Parse(entry["name"].strip(), arch)
+    archs: Union[str, list[str]] = entry.get("arch", arch)
+    hostinstall = entry.get("hostinstall", False)
+    if (isinstance(archs, str) and arch == archs) or (arch in archs) or hostinstall:
+        return Dependency.Parse(entry["name"].strip(), arch, hostinstall=hostinstall)
     return None
 
 
@@ -114,16 +122,17 @@ def print_deb_deps(deps: dict, arch: str):
 def run_in_buildroot(target_arch: str, /, *args):
     if build_arch != target_arch:
         cmd = ["schroot", "-d", "/", "-u", "root", "-c", "buildroot", "--", *args]
-    elif os.geteuid() == 0:
-        cmd = args
     else:
-        try:
-            subprocess.check_call(["sudo", "-n", "true"])
-        except subprocess.CalledProcessError:
-            raise RuntimeError(
-                "sudo is not available or password-less sudo is not configured "
-            )
-        cmd = ["sudo", "--", *args]
+        cmd = hostroot_cmd(args)
+    run_cmd(cmd)
+
+
+def run_in_hostroot(target_arch: str, /, *args):
+    cmd = hostroot_cmd(args)
+    run_cmd(cmd)
+
+
+def run_cmd(cmd):
     p = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -139,23 +148,57 @@ def run_in_buildroot(target_arch: str, /, *args):
         raise subprocess.CalledProcessError(ret, cmd)
 
 
-def run_in_buildroot_with_lock(target_arch: str, /, *args):
+def hostroot_cmd(args):
+    if os.geteuid() == 0:
+        cmd = args
+    else:
+        try:
+            subprocess.check_call(["sudo", "-n", "true"])
+        except subprocess.CalledProcessError:
+            raise RuntimeError(
+                "sudo is not available or password-less sudo is not configured "
+            )
+        cmd = ["sudo", "--", *args]
+    return cmd
+
+
+def run_with_lock(
+    target_arch: str,
+    callable: Callable[[str], None],
+    /,
+    *args,
+):
     lock = filelock.FileLock("/tmp/dpkgdeps.lock")
     with lock:
-        run_in_buildroot(target_arch, *args)
+        callable(target_arch, *args)
 
 
-def install_in_buildroot(args, allDeps):
+def run_in_buildroot_with_lock(target_arch: str, /, *args):
+    run_with_lock(target_arch, run_in_buildroot, *args)
+
+
+def run_in_hostroot_with_lock(target_arch: str, /, *args):
+    run_with_lock(target_arch, run_in_hostroot, *args)
+
+
+def install_in_root(arch: str, installer, allDeps):
     pkgs = [d.specStr() for d in allDeps]
-    run_in_buildroot_with_lock(args.arch, "apt", "update")
-
-    run_in_buildroot_with_lock(
-        args.arch,
+    installer(arch, "apt", "update")
+    installer(
+        arch,
         "apt",
         "install",
         "-y",
         *pkgs,
     )
+
+
+def install_in_buildroot(args, allDeps):
+    install_in_root(args.arch, run_in_buildroot_with_lock, allDeps)
+
+
+def install_in_hostroot(args, allDeps):
+    install_in_root(build_arch, run_in_hostroot_with_lock, allDeps)
 
 
 def main():
@@ -175,8 +218,11 @@ def main():
         if args.debdeps:
             print_deb_deps(deps, args.arch)
             return
-
-        install_in_buildroot(args, get_all_dependencies(args.arch, deps))
+        all_deps = get_all_dependencies(args.arch, deps)
+        install_in_buildroot(args, all_deps)
+        install_in_hostroot(
+            args, set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
+        )
 
 
 def get_all_dependencies(arch: str, deps: dict):
