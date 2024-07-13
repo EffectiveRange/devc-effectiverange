@@ -8,10 +8,16 @@ set -x
 STEP_DESCRIPTION="Setup schroot"
 source "$(dirname $0)/../build_common"
 
-# Install necessary packages
+
+#FIXME: parametrize nameserver addition
 echo "nameserver 8.8.8.8" >> /var/chroot/buildroot/etc/resolv.conf
+#FIXME: parametrize rpi archive URL and public key below
+echo "deb http://archive.raspberrypi.org/debian $DEBOOTSTRAP_TARGET main" > /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
+chroot /var/chroot/buildroot apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+
+# Install necessary packages
 chroot  /var/chroot/buildroot apt update
-chroot  /var/chroot/buildroot apt install -y build-essential pkg-config nano wget python3 python3-pip python3-dev
+chroot  /var/chroot/buildroot apt install -y build-essential pkg-config nano wget python3 python3-pip python3-dev raspberrypi-kernel-headers
 # Create schroot profile
 cat > /etc/schroot/chroot.d/buildroot  << EOF
 [buildroot]
