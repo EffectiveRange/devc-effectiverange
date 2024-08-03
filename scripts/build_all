@@ -49,6 +49,16 @@ ln -sfv /usr/bin/clang-format-diff-$LLVM_VERSION /usr/bin/clang-format-diff
 wget -O - https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh > /tmp/cmake_install.sh
 /bin/bash /tmp/cmake_install.sh --skip-license  --prefix=/usr
 
+# Installing latest packaging tools
+mkdir -p /opt
+cd /opt
+git clone --depth=1 -b latest  https://github.com/EffectiveRange/packaging-tools
+for packscript in $(find /opt/packaging-tools/ -name pack_\*)
+do
+packname=$(basename "$packscript")
+ln -svf "$packscript" "/usr/local/bin/$packname"
+done
+
 mkdir -p /tmp/build
 
 cd /tmp/build 
