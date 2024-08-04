@@ -5,7 +5,7 @@
 PACKAGES_TO_REMOVE=""
 
 # These build deps will be kept in the final image
-PACKAGES_TO_INSTALL="curl bc vim gperf bison flex texinfo help2man python3-dev autoconf automake libtool libtool-bin gawk bzip2 xz-utils unzip patch rsync git ninja-build debootstrap cron rsyslog fakechroot fakeroot apt-rdepends build-essential software-properties-common libstdc++6 gcc g++ wget make  python3 python3-pip inetutils-ping clangd openssh-client pkg-config dpkg-dev nano schroot gdb gnupg device-tree-compiler"
+PACKAGES_TO_INSTALL="curl bc vim gperf bison flex texinfo help2man python3-dev autoconf automake libtool libtool-bin gawk bzip2 xz-utils unzip patch rsync git ninja-build debootstrap cron rsyslog fakechroot fakeroot apt-rdepends build-essential software-properties-common libstdc++6 gcc g++ wget make  python3 python3-pip python3-virtualenv python3-all inetutils-ping clangd openssh-client pkg-config dpkg-dev nano schroot gdb gnupg device-tree-compiler ruby ruby-dev rubygems squashfs-tools"
 
 # TODO: find a way to determine the latest stable version automatically
 CMAKE_VERSION=3.29.6
