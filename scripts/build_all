@@ -24,6 +24,8 @@ apt-get update && apt-get upgrade -y
 
 apt-get install -y --no-install-recommends $PACKAGES_TO_INSTALL
 
+# Install fpm packaging tools
+gem install --no-document fpm
 
 # Install latest clang tooling
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
