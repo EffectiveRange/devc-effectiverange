@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  -o pipefail
+set -e -x  -o pipefail
 
 STEP_DESCRIPTION="testing build and packaging toolchain"
 if [ -f /usr/share/cmake/toolchain.cmake ];
@@ -44,7 +44,7 @@ xcmake "$TEST_DIR/build_static_lib_test"
 cmake --build .
 ctest .
 cpack .
-dpkg -c /opt/debs/test_staticlib_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/bin/libtest_slib.a$"
+dpkg -c /opt/debs/test_staticlib_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/lib/libtest_slib.a$"
 dpkg -c /opt/debs/test_staticlib_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/include/test_lib/test.hpp$"
 nodepends="$(dpkg -I /opt/debs/test_staticlib_build_1.0.0-1_${DEB_ARCH}.deb | grep -E 'Depends:' || true)"
 if [ -n "$nodepends" ]; then
@@ -61,7 +61,7 @@ cmake --build .
 ctest .
 cpack .
 dpkg -c /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/bin/complexbin$"
-dpkg -c /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/bin/libcomplexlib.a$"
+dpkg -c /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/lib/libcomplexlib.a$"
 dpkg -c /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "./usr/local/include/complexlib/lib.hpp$"
 dpkg -I /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "Depends:.*libncurses6.*$"
 dpkg -I /opt/debs/test_complex_build_1.0.0-1_${DEB_ARCH}.deb | grep -E "Depends:.*libstdc\+\+6.*$"
