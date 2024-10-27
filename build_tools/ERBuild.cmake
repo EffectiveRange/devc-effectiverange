@@ -64,7 +64,7 @@ function(_ER_ADD_BINARY_IMPL name)
   endif()
 
 
-  install(TARGETS ${name}  DESTINATION bin LIBRARY DESTINATION lib INCLUDES DESTINATION include PUBLIC_HEADER DESTINATION include)
+  install(TARGETS ${name} RUNTIME DESTINATION bin LIBRARY DESTINATION lib INCLUDES DESTINATION include PUBLIC_HEADER DESTINATION include)
 
   if(NOT _ERB_EXE)
     # installing public headers directory verbatim for libraries
