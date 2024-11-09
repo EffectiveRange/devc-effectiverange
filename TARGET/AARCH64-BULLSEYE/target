@@ -1,0 +1,26 @@
+APT_SOURCES='"deb http://deb.debian.org/debian bullseye main contrib non-free" "deb http://security.debian.org/debian-security bullseye-security main contrib non-free" "deb http://deb.debian.org/debian bullseye-updates main contrib non-free" "deb http://archive.raspberrypi.org/debian/ bullseye main" '
+RPI_KERNEL_HEADERS_VER=1:1.20230405-1
+RPI_KERNEL_HEADERS_SOURCE="http://archive.raspberrypi.org/debian bullseye/main arm64 Packages"
+LIBC6_VER=2.31-13+rpt2+rpi1+deb11u11
+LIBC6_SOURCE="http://archive.raspberrypi.org/debian bullseye/main arm64 Packages"
+PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+NAME="Debian GNU/Linux"
+VERSION_ID="11"
+VERSION="11 (bullseye)"
+VERSION_CODENAME=bullseye
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+KERNEL_VER='6.1.21-v8+'
+MARCH='aarch64'
+LIBC_INFO='libc6/oldstable,now 2.31-13+rpt2+rpi1+deb11u11 arm64 [installed]'
+LIBCPP_INFO='libstdc++6/oldstable,now 10.2.1-6 arm64 [installed]'
+BINUTILS_INFO='binutils/oldstable,now 2.35.2-2 arm64 [installed,automatic]'
+GCC_VER=10.2.1
+GCC_MACHINE="aarch64-linux-gnu"
+GCC_CONFIG="-v --with-pkgversion='Debian 10.2.1-6' --with-bugurl=file:///usr/share/doc/gcc-10/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-10 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-mutex"
+LD_COMPRESSED_DEBUGINFO=''
+BINUTILS_GOLD_LINKER=
+BINUTILS_GOLD_LINKER='yes'
+LD_DEFAULT_GOLD=''

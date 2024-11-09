@@ -170,7 +170,7 @@ def get_apt_sources(s: str, arch: str):
 
 
 rpi_kernel_ver = os.environ.get("KERNEL_VER") or ""
-kernel_ver = rpi_kernel_ver.rstrip("+")
+kernel_ver = rpi_kernel_ver.rstrip("+").split("-v")[0]
 target = os.environ.get("GCC_MACHINE")
 
 binutils_ver = get_version_from_apt_info("BINUTILS_INFO")
@@ -206,6 +206,8 @@ def printPkgVars(pkg: APTPkgInfo):
     print(f"{pkg.name}_VERSION={quoted(pkg.pkgver)}")
 
 
+kernel_arch_mapping = {"aarch64": "arm64"}
+
 print(
     f"""
 TARGET={target}
@@ -213,7 +215,7 @@ BINUTILS_VERSION={binutils_ver}
 GCC_VERSION={gcc_ver}
 GCC_MAJOR_VERSION={gcc_major_ver}
 GLIBC_VERSION={libc_ver}
-LINUX_ARCH={"arm" if kernel_arch.startswith("arm") else kernel_arch}
+LINUX_ARCH={"arm" if kernel_arch.startswith("arm") else kernel_arch_mapping.get(kernel_arch,kernel_arch)}
 LINUX_KERNEL_VERSION={kernel_ver}
 LINUX_KERNEL_VERSION_URL={kernel_url(kernel_ver)}
 RPI_APT_SOURCES=({' '.join(quoted(r) for r in sorted(pkgRepos))})
