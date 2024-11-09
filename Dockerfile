@@ -6,7 +6,7 @@ FROM ${BASE_IMAGE_REPO}:${BASE_IMAGE_VER}
 ARG BUILD_UID=499
 ARG BUILD_GID=499
 ARG KEEP_BUILD_ARTIFACTS=FALSE
-ARG SKU_DIR=NON_EXISTENT_FILE
+ARG TARGET_DIR=NON_EXISTENT_FILE
 ARG BUILD_ARCH=armhf
 
 RUN apt update && apt install -y wget
@@ -18,8 +18,8 @@ RUN if ! id crossbuilder 2>/dev/null;then \
     ;fi
 COPY --chown=crossbuilder:crossbuilder ./build_tools /home/crossbuilder/build_tools
 COPY --chown=crossbuilder:crossbuilder ./scripts /home/crossbuilder/scripts
-COPY --chown=crossbuilder:crossbuilder $SKU_DIR /home/crossbuilder/sku
-RUN touch /home/crossbuilder/sku.$(basename $SKU_DIR)
+COPY --chown=crossbuilder:crossbuilder $TARGET_DIR /home/crossbuilder/target
+RUN touch /home/crossbuilder/target.$(basename $TARGET_DIR)
 
 # Non-interactive configuration of tzdata
 ENV DEBIAN_FRONTEND noninteractive

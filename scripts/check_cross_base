@@ -10,9 +10,9 @@ set -e
 ROOT_DIR="$(dirname $0)"
 
 BUILD_ARCH=$1
-SKU_DIR=$2
+TARGET_DIR=$2
 
-CROSS_IMG_VER=$("$ROOT_DIR/gen_cross_hash" $BUILD_ARCH "$SKU_DIR" 2>/dev/null )
+CROSS_IMG_VER=$("$ROOT_DIR/gen_cross_hash" $BUILD_ARCH "$TARGET_DIR" 2>/dev/null )
 
 if docker inspect effectiverange/$BUILD_ARCH-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1 
 then

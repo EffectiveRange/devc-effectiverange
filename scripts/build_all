@@ -67,7 +67,7 @@ cd /tmp/build
 
 for step in $( ls -1 "$ROOT_DIR/build_steps_$BUILD_ARCH/" | sort -n ) 
 do
-/bin/bash "$ROOT_DIR/build_steps_$BUILD_ARCH/$step" /home/crossbuilder/sku "$@"
+/bin/bash "$ROOT_DIR/build_steps_$BUILD_ARCH/$step" /home/crossbuilder/target "$@"
 done
 
 

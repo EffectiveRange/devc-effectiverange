@@ -41,7 +41,7 @@ LIBC6_BASE_VERSION="${LIBC6_VERSION%+*}"
 
 if [ "$LIBC6_BASE_VERSION" != "$CURRENT_GLIBC_VER" ]; then
     echo "Base versions mismatch between libc versions $LIBC6_BASE_VERSION != $CURRENT_GLIBC_VER"
-    echo "This might cause runtime errors, please update the SKU definition file!"
+    echo "This might cause runtime errors, please update the TARGET definition file!"
     exit 1
 fi
 

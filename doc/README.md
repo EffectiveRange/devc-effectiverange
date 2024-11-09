@@ -16,27 +16,27 @@ Build-only dependencies can be obtained from any sources given it's supports aut
 
 ## Collecting dependency info from a RPI installation
 
-The SKU dir layout is the following:
-- `<SKU Name>`
-  - sku  `the SKU file, obtained by the collect_info script, could be edited manually, contains important OS & version info environment variables`
-  - sku.extra `extra env variables to be addded manually`
+The TARGET dir layout is the following:
+- `<TARGET Name>`
+  - target  `the TARGET file, obtained by the collect_info script, could be edited manually, contains important OS & version info environment variables`
+  - target.extra `extra env variables to be addded manually`
   - .config  `the kernel config settings, required for setting up the kernel build infra`
   - patch `contains patch files with a number prefixed that controls the application order`
     - id-dirname.patch `patch file name <idx>-<dirname>.patch will be applied in directory <dir>, e.g. 11-gcc.patch`
    
 
-### Setting up a new SKU and building the devcontainer
+### Setting up a new TARGET and building the devcontainer
 
-1. create a new directory as detailed above for the new SKU
-2. Use `scripts/collect_info <hostname> > path/to/SKUDIR/sku` to save the main sku file 
-3. Optionally add any custom variable to `sku.extra` file
+1. create a new directory as detailed above for the new TARGET
+2. Use `scripts/collect_info <hostname> > path/to/TARGETDIR/target` to save the main target file 
+3. Optionally add any custom variable to `target.extra` file
 4. TBD: how to obtain the kernel config file...
 5. execute `make <target>` from the workspace root
 
 
 ### Development 
 
-For interactive development, you can use the `dev_tools/run_devc` command, that accepts the container id as argument. It will mount in the directory into the running container. Inside the container shell, you can use the `/devc/dev_tools/link_devc <SKU name>` command to set up symlinks inside the container to the current workspace SKU files, that can be editet on the fly from the host, without the need of rebuilding the container.
+For interactive development, you can use the `dev_tools/run_devc` command, that accepts the container id as argument. It will mount in the directory into the running container. Inside the container shell, you can use the `/devc/dev_tools/link_devc <TARGET name>` command to set up symlinks inside the container to the current workspace TARGET files, that can be editet on the fly from the host, without the need of rebuilding the container.
 
 
 ## Build details
@@ -47,9 +47,9 @@ The top level entry point is the `scripts/build_all[_$ARCH]` which is executed f
 ### Details
 The build_all script invokes the `build_cross_tools_armhf` script, that in turn executes the build steps from `scripts/build_steps_armhf` in order. The build steps are - and should be - written in a way so that they are individually executable for easier troubleshooting. E.g. while troubleshooting a build and there's an error at one step you can invoke
 ```bash
-root@1231a9c601e7:/tmp/build#/home/crossbuilder/scripts/build_steps_armhf/80-kernelmodulebuildstep /home/crossbuilder/sku
+root@1231a9c601e7:/tmp/build#/home/crossbuilder/scripts/build_steps_armhf/80-kernelmodulebuildstep /home/crossbuilder/target
 ```
-Note: the SKU dir has to be passed in for each build step for the environment variables
+Note: the TARGET dir has to be passed in for each build step for the environment variables
 
 After successful docker image build, all unnecessary deps are removed, also the build artifact directory as well. The full build log is kept under `/tmp/build.log` so that in case of a failure it can be inspected later.
 

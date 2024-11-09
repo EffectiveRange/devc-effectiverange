@@ -4,18 +4,18 @@
 
 set -e
 BUILD_ARCH="$1"
-SKU="$2"
+TARGET="$2"
 
 if [ -z "$BUILD_ARCH" ]
 then
-echo "Usage: $0 <ARCH> [<SKU>]"
+echo "Usage: $0 <ARCH> [<TARGET>]"
 exit 1
 fi
 
 
-if [ -z "$SKU" ]
+if [ -z "$TARGET" ]
 then
-SKU=PROTO-0002
+TARGET=PROTO-0002
 fi
 
 # python tests
@@ -27,7 +27,7 @@ python3 -m venv /tmp/testvenv
 
 IMG_ID=$(uuidgen)
 
-make -C "$(dirname $0)" base-$BUILD_ARCH SKU_NAME=$SKU IMG_TAG=$IMG_ID
+make -C "$(dirname $0)" base-$BUILD_ARCH TARGET_NAME=$TARGET IMG_TAG=$IMG_ID
 
 make -C "$(dirname $0)" devc-$BUILD_ARCH  IMG_TAG=$IMG_ID BASE_IMAGE_VER=$IMG_ID
 

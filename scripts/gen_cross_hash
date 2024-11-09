@@ -4,7 +4,7 @@
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
 usage() {
-    echo "Usage: $0 <TARGET_ARCH> <SKU_DIR>"
+    echo "Usage: $0 <TARGET_ARCH> <TARGET_DIR>"
     exit 1
 }
 
@@ -21,15 +21,15 @@ fi
 ROOT_DIR="$(dirname $0)"
 
 HASH_SCRIPTS=$(calculate_hash "$ROOT_DIR/build_steps_cross_armhf")
-HASH_SKU=$(calculate_hash "$2")
+HASH_TARGET=$(calculate_hash "$2")
 HASH_TOP=$(sha256sum "$ROOT_DIR/build_cross_tools_armhf" | awk '{print $1}')
 HASH_VARS=$("$ROOT_DIR/gen_vars" "$2" | grep -v '#ignore-hash' | sha256sum | awk '{print $1}')
 
 echo "HASH_SCRIPTS: $HASH_SCRIPTS" >&2
-echo "HASH_SKU: $HASH_SKU" >&2
+echo "HASH_TARGET: $HASH_TARGET" >&2
 echo "HASH_TOP: $HASH_TOP" >&2
 echo "HASH_VARS: $HASH_VARS" >&2
 
-COMBINED_HASH=$(echo "$HASH_SCRIPTS$HASH_TOP$HASH_SKU$HASH_VARS" | sha256sum | awk '{print $1}')
+COMBINED_HASH=$(echo "$HASH_SCRIPTS$HASH_TOP$HASH_TARGET$HASH_VARS" | sha256sum | awk '{print $1}')
 
 echo "$COMBINED_HASH"

@@ -4,11 +4,11 @@
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
 
-SKU_ID="$1"
+TARGET_ID="$1"
 HOME_DIR="/home/crossbuilder"
-if [ -z "$SKU_ID" ]
+if [ -z "$TARGET_ID" ]
 then
-echo "Missing SKU ID."
+echo "Missing TARGET ID."
 exit 1
 fi
 
@@ -21,12 +21,12 @@ do
     fi
 done
 
-if  [ -d "/devc/SKU/$1" ]
+if  [ -d "/devc/TARGET/$1" ]
 then
-    rm -rf "$HOME_DIR/sku"
-    ln -v -s "/devc/SKU/$1" "$HOME_DIR/sku"
+    rm -rf "$HOME_DIR/target"
+    ln -v -s "/devc/TARGET/$1" "$HOME_DIR/target"
 else
-    echo "can't link in devc using /devc/SKU/$1"
+    echo "can't link in devc using /devc/TARGET/$1"
 fi
 
 ln -f -v -s /devc/build_tools/dpkgdeps /usr/bin/dpkgdeps

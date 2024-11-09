@@ -15,7 +15,7 @@ on:
       arch:
         required: true
         type: string
-      sku:
+      target:
         required: false
         type: string
         default: "PROTO-0002"
@@ -64,7 +64,7 @@ jobs:
           build-args: |
             BASE_IMAGE_REPO=${{ inputs.base_repo }}
             BASE_IMAGE_VER=${{ inputs.base_ver }}
-            SKU_DIR=SKU/${{ inputs.sku }}
+            TARGET_DIR=TARGET/${{ inputs.target }}
             BUILD_ARCH=${{ inputs.arch }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

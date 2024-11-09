@@ -15,7 +15,7 @@ on:
       arch:
         required: true
         type: string
-      sku:
+      target:
         required: false
         type: string
         default: "PROTO-0002"
@@ -46,10 +46,10 @@ jobs:
       - name: Generate Base Image version hash
         id: meta
         run: |
-          export ER_IMG_TAG="$(./scripts/gen_cross_hash ${{ inputs.arch }}  ./SKU/${{ inputs.sku }})"
+          export ER_IMG_TAG="$(./scripts/gen_cross_hash ${{ inputs.arch }}  ./TARGET/${{ inputs.target }})"
           echo "version=$ER_IMG_TAG" >> $GITHUB_OUTPUT
           echo "tags=effectiverange/${{ inputs.arch }}-tools-cross:$ER_IMG_TAG" >> $GITHUB_OUTPUT
-          echo "generate_image=$(./scripts/check_cross_base ${{ inputs.arch }} ./SKU/${{ inputs.sku }})" >> $GITHUB_OUTPUT
+          echo "generate_image=$(./scripts/check_cross_base ${{ inputs.arch }} ./TARGET/${{ inputs.target }})" >> $GITHUB_OUTPUT
         
       - name: Build and push Docker images
         if: steps.meta.outputs.generate_image == 'true'
@@ -60,7 +60,7 @@ jobs:
           push: true
           file: "Dockerfile-cross"
           build-args: |
-           SKU_DIR=SKU/${{ inputs.sku }}
+           TARGET_DIR=TARGET/${{ inputs.target }}
            BUILD_ARCH=${{ inputs.arch }}
           tags: ${{ steps.meta.outputs.tags }}
     outputs:

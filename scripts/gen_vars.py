@@ -32,7 +32,7 @@ parser.add_argument(
     "--patchdir", default=None, required=False, help="apply patches from dir"
 )
 
-parser.add_argument("--skudir", default=None, required=False, help="SKU dir")
+parser.add_argument("--targetdir", default=None, required=False, help="TARGET dir")
 
 parser.add_argument(
     "--langs",
@@ -254,10 +254,10 @@ if gold_linker and not gold_default:
 print(f'BINUTILS_CONFIGURATION_OPTIONS="{binutils_config_options}"')
 
 if args.patchdir:
-    print(f"SKU_PATCH_DIR={args.patchdir} #ignore-hash")
+    print(f"TARGET_PATCH_DIR={args.patchdir} #ignore-hash")
 
-if args.skudir:
-    print(f"SKU_DIR={args.skudir} #ignore-hash")
+if args.targetdir:
+    print(f"TARGET_DIR={args.targetdir} #ignore-hash")
 
 if args.ipversion is not None:
     inet_ver = "--inet4-only" if args.ipversion == 4 else "--inet6-only"

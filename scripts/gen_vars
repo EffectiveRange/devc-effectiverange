@@ -5,26 +5,26 @@
 # SPDX-License-Identifier: MIT
 
 set -e
-SKU_DIR="$(echo $1 | sed -r  's|/$\s*||')"
-if [ ! -d "$SKU_DIR" -o -z "$SKU_DIR" ]
+TARGET_DIR="$(echo $1 | sed -r  's|/$\s*||')"
+if [ ! -d "$TARGET_DIR" -o -z "$TARGET_DIR" ]
 then
- >&2 echo "Non-existent input dir, usage $0 <SKU dir> [..args]"
+ >&2 echo "Non-existent input dir, usage $0 <TARGET dir> [..args]"
  exit 1
 fi
 
 shift 1
 set -a
-. "$SKU_DIR/sku"
-if [ -f "$SKU_DIR/sku.extra" ]
+. "$TARGET_DIR/target"
+if [ -f "$TARGET_DIR/target.extra" ]
 then 
- . "$SKU_DIR/sku.extra"
+ . "$TARGET_DIR/target.extra"
 fi
 set +a
 
-if [ -d "$SKU_DIR/patch" ]
+if [ -d "$TARGET_DIR/patch" ]
 then 
-PATCH_DIR="--patchdir='$SKU_DIR/patch'"
+PATCH_DIR="--patchdir='$TARGET_DIR/patch'"
 fi
 
-python3 "$(dirname $0)/gen_vars.py" --skudir="$SKU_DIR" $PATCH_DIR "$@"
+python3 "$(dirname $0)/gen_vars.py" --targetdir="$TARGET_DIR" $PATCH_DIR "$@"
 

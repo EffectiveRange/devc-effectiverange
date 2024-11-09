@@ -7,11 +7,11 @@
 STEP_DESCRIPTION="Applying patches"
 source "$(dirname $0)/../build_common"
 
-if [ -d "$SKU_PATCH_DIR" ]
+if [ -d "$TARGET_PATCH_DIR" ]
 then
-    for pf in $(ls -1 "$SKU_PATCH_DIR" | sort )
+    for pf in $(ls -1 "$TARGET_PATCH_DIR" | sort )
     do
-        patch_file=$(readlink -f "$SKU_PATCH_DIR/$pf")
+        patch_file=$(readlink -f "$TARGET_PATCH_DIR/$pf")
         to_patch="$(echo $patch_file | sed -r 's|.*/[0-9]+-(\w+)\.patch|\1|')"
         patch_dir=$(find . -maxdepth  1 -name $to_patch\* -type d)
         pushd $patch_dir
