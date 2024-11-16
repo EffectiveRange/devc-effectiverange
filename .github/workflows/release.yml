@@ -29,7 +29,23 @@ jobs:
       arch: "armhf"
       base_repo: "effectiverange/armhf-tools-cross"
       base_ver:  ${{needs.call_build_cross_base-armhf.outputs.imagever}}
-  
+ 
+  call_build_cross_base-arm64:
+    uses: ./.github/workflows/docker-image-cross.yml
+    secrets: inherit
+    with:
+      arch: "arm64"
+      target: "AARCH64-BULLSEYE"
+
+  call_build_and_publish_images-arm64:
+    needs: call_build_cross_base-arm64
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "arm64"
+      base_repo: "effectiverange/arm64-tools-cross"
+      base_ver:  ${{needs.call_build_cross_base-arm64.outputs.imagever}}
+
   call_build_and_publish_images-amd64:
     uses: ./.github/workflows/docker-image-single.yml
     secrets: inherit

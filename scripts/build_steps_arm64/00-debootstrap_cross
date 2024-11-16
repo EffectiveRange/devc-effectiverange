@@ -10,6 +10,5 @@ source "$(dirname $0)/../build_common"
 set -o pipefail
 mkdir -p /var/chroot/
 rm -rf /var/chroot/buildroot
-wget -qO -  ${DEBOOTSTRAP_SOURCE}/raspbian.public.key  | gpg --import -
-debootstrap --arch=${RPI_APT_ARCH} --keyring=/root/.gnupg/pubring.kbx --verbose --foreign --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot ${DEBOOTSTRAP_SOURCE}/raspbian/
+debootstrap --arch=${RPI_APT_ARCH}  --verbose --foreign --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot ${DEBOOTSTRAP_SOURCE}/debian/
 chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage

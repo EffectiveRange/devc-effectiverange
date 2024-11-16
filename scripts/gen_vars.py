@@ -184,7 +184,7 @@ gcc_opts = add_extra_gcc_options(sanitize_gcc_options(gcc_conf))
 gold_linker = os.environ.get("BINUTILS_GOLD_LINKER", "").strip()
 compressed_debuginfo = os.environ.get("LD_COMPRESSED_DEBUGINFO", "").strip()
 gold_default = os.environ.get("LD_DEFAULT_GOLD", "").strip()
-raspbian_source = os.environ.get("RASPBIAN_DEBOOTSRAP_SOURCE", "").strip().rstrip("/")
+debootstrap_source = os.environ.get("DEBOOTSRAP_SOURCE", "").strip().rstrip("/")
 debootsrap_target = os.environ.get("VERSION_CODENAME", "").strip()
 
 
@@ -227,7 +227,7 @@ USE_NEWLIB={1 if args.newlib else 0}
 INSTALL_PATH="{prefix}"
 GCC_CONFIGURATION_OPTIONS="{gcc_opts}"
 GLIBC_MAKE_FLAGS="{glibc_make_flags}"
-RASPBIAN_SOURCE="{raspbian_source}"
+DEBOOTSTRAP_SOURCE="{debootstrap_source}"
 DEBOOTSTRAP_TARGET="{debootsrap_target}"
 """
 )

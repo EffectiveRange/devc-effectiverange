@@ -18,7 +18,7 @@ on:
       target:
         required: false
         type: string
-        default: "PROTO-0002"
+        default: "ARMHF-BULLSEYE"
     outputs:
       imageid:
         description: "The docker image ID for the cross base image that's built"

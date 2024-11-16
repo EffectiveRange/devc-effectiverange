@@ -18,7 +18,7 @@ on:
       target:
         required: false
         type: string
-        default: "PROTO-0002"
+        default: "ARMHF-BULLSEYE"
       base_repo:
         required: false
         type: string
