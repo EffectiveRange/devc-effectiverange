@@ -194,6 +194,9 @@ assert len(arches) == 1, "Multiple architecture deteceted"
 rpi_apt_arch = tuple(arches)[0]
 pkgRepos = get_apt_sources(os.environ.get("APT_SOURCES", "").strip(), rpi_apt_arch)
 
+targetPkgRepos = [p for p in pkgRepos if debootstrap_source not in p]
+
+
 rpi_apt_archive_key = os.environ.get("RPI_APT_ARCHIVE_KEY", "").strip()
 rpi_apt_key = os.environ.get("RPI_APT_KEY", "").strip()
 
@@ -229,6 +232,7 @@ GCC_CONFIGURATION_OPTIONS="{gcc_opts}"
 GLIBC_MAKE_FLAGS="{glibc_make_flags}"
 DEBOOTSTRAP_SOURCE="{debootstrap_source}"
 DEBOOTSTRAP_TARGET="{debootsrap_target}"
+TARGET_APT_SOURCES=({' '.join(quoted(r) for r in sorted(targetPkgRepos))})
 """
 )
 

@@ -11,17 +11,24 @@ source "$(dirname $0)/../build_common"
 
 #FIXME: parametrize nameserver addition
 echo "nameserver 8.8.8.8" >> /var/chroot/buildroot/etc/resolv.conf
-#FIXME: parametrize rpi archive URL and public key below
-echo "deb http://archive.raspberrypi.org/debian $DEBOOTSTRAP_TARGET main" > /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
-chroot /var/chroot/buildroot apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
-
-#FIXME: we should be also using $DEBOOTSTRAP_TARGET instead of stable!!!
-echo "deb http://aptrepo.effective-range.com stable main" > /var/chroot/buildroot/etc/apt/sources.list.d/er.list
-chroot /var/chroot/buildroot apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C1AEE2EDBAEC37595801DDFAE15BC62117A4E0F3
 
 # Install necessary packages
 chroot  /var/chroot/buildroot apt update
-chroot  /var/chroot/buildroot apt install -y build-essential pkg-config nano wget python3 python3-pip python3-dev raspberrypi-kernel-headers
+chroot  /var/chroot/buildroot apt install -y gnupg build-essential pkg-config nano wget python3 python3-pip python3-dev 
+
+# Add apt keys for RPI sources
+chroot /var/chroot/buildroot apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+
+touch /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
+for repo in "${TARGET_APT_SOURCES[@]}"
+do
+echo "${repo}" >> /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
+done
+
+chroot  /var/chroot/buildroot apt update
+chroot  /var/chroot/buildroot apt install -y raspberrypi-kernel-headers
+
+
 # Create schroot profile
 cat > /etc/schroot/chroot.d/buildroot  << EOF
 [buildroot]

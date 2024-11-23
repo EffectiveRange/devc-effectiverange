@@ -7,9 +7,6 @@
 STEP_DESCRIPTION="Install build utils into schroot"
 source "$(dirname $0)/../build_common"
 
-# Install necessary packages
-echo "nameserver 8.8.8.8" >> /var/chroot/buildroot/etc/resolv.conf
-
 chroot /var/chroot/buildroot apt update
 
 # Fix blocking netbase install
