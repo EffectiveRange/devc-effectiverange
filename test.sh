@@ -15,7 +15,7 @@ fi
 
 if [ -z "$TARGET" ]
 then
-TARGET=PROTO-0002
+TARGET=ARMHF-BULLSEYE
 fi
 
 # python tests

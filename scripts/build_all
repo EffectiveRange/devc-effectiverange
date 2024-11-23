@@ -24,43 +24,6 @@ apt-get update && apt-get upgrade -y
 
 apt-get install -y --no-install-recommends $PACKAGES_TO_INSTALL
 
-# Install fpm packaging tools
-gem install --no-document fpm
-
-# Install latest clang tooling
-wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh 
-chmod +x /tmp/llvm.sh 
-
-# In native devc install all clang and llvm packages
-if [ $HOST_ARCH == $BUILD_ARCH ];then
- /tmp/llvm.sh all
-else
- /tmp/llvm.sh
-fi
-CLANGD_EXE=$(ls -1 /usr/bin/clangd-* | sort -hr | head -n1)
-LLVM_VERSION=$(echo $CLANGD_EXE | cut -d- -f2)
-apt-get install -y --no-install-recommends clang-format-$LLVM_VERSION
-# Add in unversioned symlinks for clangd and clang-format
-ln -sfv $CLANGD_EXE /usr/bin/clangd
-ln -sfv /usr/bin/clang-format-$LLVM_VERSION /usr/bin/clang-format
-ln -sfv /usr/bin/clang-format-diff-$LLVM_VERSION /usr/bin/clang-format-diff
-
-
-# Install latest stable CMake 
-wget -O - https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh > /tmp/cmake_install.sh
-/bin/bash /tmp/cmake_install.sh --skip-license  --prefix=/usr
-
-# Installing latest packaging tools
-mkdir -p /opt
-cd /opt
-git clone --depth=1 -b latest  https://github.com/EffectiveRange/packaging-tools
-for packscript in $(find /opt/packaging-tools/ -name pack_\*)
-do
-packname=$(basename "$packscript")
-ln -svf "$packscript" "/usr/local/bin/$packname"
-done
-
 mkdir -p /tmp/build
 
 cd /tmp/build 
@@ -70,6 +33,42 @@ do
 /bin/bash "$ROOT_DIR/build_steps_$BUILD_ARCH/$step" /home/crossbuilder/target "$@"
 done
 
+# # Install fpm packaging tools
+# gem install --no-document fpm
+
+# # Install latest clang tooling
+# wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+# wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh 
+# chmod +x /tmp/llvm.sh 
+
+# # In native devc install all clang and llvm packages
+# if [ $HOST_ARCH == $BUILD_ARCH ];then
+#  /tmp/llvm.sh all
+# else
+#  /tmp/llvm.sh
+# fi
+# CLANGD_EXE=$(ls -1 /usr/bin/clangd-* | sort -hr | head -n1)
+# LLVM_VERSION=$(echo $CLANGD_EXE | cut -d- -f2)
+# apt-get install -y --no-install-recommends clang-format-$LLVM_VERSION
+# # Add in unversioned symlinks for clangd and clang-format
+# ln -sfv $CLANGD_EXE /usr/bin/clangd
+# ln -sfv /usr/bin/clang-format-$LLVM_VERSION /usr/bin/clang-format
+# ln -sfv /usr/bin/clang-format-diff-$LLVM_VERSION /usr/bin/clang-format-diff
+
+
+# # Install latest stable CMake 
+# wget -O - https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh > /tmp/cmake_install.sh
+# /bin/bash /tmp/cmake_install.sh --skip-license  --prefix=/usr
+
+# # Installing latest packaging tools
+# mkdir -p /opt
+# cd /opt
+# git clone --depth=1 -b latest  https://github.com/EffectiveRange/packaging-tools
+# for packscript in $(find /opt/packaging-tools/ -name pack_\*)
+# do
+# packname=$(basename "$packscript")
+# ln -svf "$packscript" "/usr/local/bin/$packname"
+# done
 
 # Clean up
 rm -rf /tmp/build 

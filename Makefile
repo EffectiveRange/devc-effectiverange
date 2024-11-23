@@ -27,8 +27,8 @@ base-armhf: cross-armhf
 base-amd64:
 	docker buildx build . --file Dockerfile --tag effectiverange/amd64-tools-base$(:)$(IMG_TAG) --build-arg TARGET_DIR=TARGET/$(TARGET_NAME) --build-arg KEEP_BUILD_ARTIFACTS=$(KEEP_BUILD_ARTIFACTS) --build-arg BUILD_ARCH=amd64
 
-base-arm64:
-	docker buildx build . --file Dockerfile --tag effectiverange/arm64-tools-base$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/arm64-tools-cross --build-arg BASE_IMAGE_VER=$$(./scripts/gen_cross_hash arm64 TARGET/$(TARGET_NAME))  --build-arg TARGET_DIR=TARGET/$(TARGET_NAME) --build-arg KEEP_BUILD_ARTIFACTS=$(KEEP_BUILD_ARTIFACTS) --build-arg BUILD_ARCH=arm64
+base-arm64: cross-armhf
+	docker buildx build . --file Dockerfile --tag effectiverange/arm64-tools-base$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/arm64-tools-cross --build-arg BASE_IMAGE_VER=$$(./scripts/gen_cross_hash armhf TARGET/$(TARGET_NAME)) --build-arg TARGET_DIR=TARGET/$(TARGET_NAME) --build-arg KEEP_BUILD_ARTIFACTS=$(KEEP_BUILD_ARTIFACTS) --build-arg BUILD_ARCH=arm64
 
 
 devc-armhf:

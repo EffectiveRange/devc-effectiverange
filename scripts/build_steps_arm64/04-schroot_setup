@@ -1,1 +1,35 @@
-../build_steps_armhf/04-schroot_setup
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -x
+STEP_DESCRIPTION="Setup schroot"
+source "$(dirname $0)/../build_common"
+
+
+#FIXME: parametrize nameserver addition
+echo "nameserver 8.8.8.8" >> /var/chroot/buildroot/etc/resolv.conf
+
+# Install necessary packages
+chroot  /var/chroot/buildroot apt update
+chroot  /var/chroot/buildroot apt install -y gnupg build-essential pkg-config nano wget python3 python3-pip python3-dev 
+
+#FIXME: ADD RPI and other repos to
+
+#FIXME: install raspberry kernel headers
+
+echo "deb http://aptrepo.effective-range.com stable main" > /var/chroot/buildroot/etc/apt/sources.list.d/er.list
+chroot /var/chroot/buildroot apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C1AEE2EDBAEC37595801DDFAE15BC62117A4E0F3
+
+
+# Create schroot profile
+cat > /etc/schroot/chroot.d/buildroot  << EOF
+[buildroot]
+description=ER buildroot for uniform builds ($RPI_APT_ARCH)
+directory=/var/chroot/buildroot
+root-users=root,crossbuilder
+users=root,crossbuilder
+type=directory
+EOF
