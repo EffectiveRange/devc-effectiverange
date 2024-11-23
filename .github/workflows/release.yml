@@ -43,6 +43,7 @@ jobs:
     secrets: inherit
     with:
       arch: "arm64"
+      target: "AARCH64-BULLSEYE"
       base_repo: "effectiverange/arm64-tools-cross"
       base_ver:  ${{needs.call_build_cross_base-arm64.outputs.imagever}}
 
