@@ -57,6 +57,37 @@ class Test(unittest.TestCase):
 """
         return json.loads(text)
 
+    def complex_deps_w_hostinstall(self):
+        text = """
+{
+    "deps": [
+        "libstdc++6",
+        {"name":"libc6","arch":"armhf"}
+    ],
+    "build_deps": [
+        {"name":"libc6-dev","arch":["armhf","arm64"]},
+        {"name":"protoc-compiler","hostinstall":true}
+    ],
+    "ignore_deps": [
+        "debconf-2.0",
+        "libc-dev"
+    ]
+}
+"""
+        return json.loads(text)
+
+    def test_complex_parsing_w_hostinstall(self):
+        deps = get_all_dependencies("arm64", self.complex_deps_w_hostinstall())
+        self.assertEqual(len(deps), 3)
+        depNames = [d.name for d in deps]
+        self.assertIn("libstdc++6", depNames)
+        self.assertIn("libc6-dev", depNames)
+        self.assertTrue(all(d.arch == "arm64" for d in deps))
+        self.assertTrue(all(d.ver is None for d in deps))
+        protod = [d for d in deps if d.name == "protoc-compiler"]
+        self.assertEqual(len(protod), 1)
+        self.assertTrue(protod[0].hostinstall)
+
     def test_complex_parsing(self):
         deps = get_all_dependencies("arm64", self.complex_deps())
         self.assertEqual(len(deps), 2)
