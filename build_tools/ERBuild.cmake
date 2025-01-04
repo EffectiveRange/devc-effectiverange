@@ -8,6 +8,107 @@ enable_language(C CXX)
 
 include(GNUInstallDirs)
 
+if( NOT ERBUILD_CONFIG_CMAKE_INCLUDED)
+set(ERBUILD_CONFIG_CMAKE_INCLUDED ON CACHE BOOL "erbuild config included")
+
+SET( CMAKE_CXX_FLAGS_COVERAGE "-fPIC -fprofile-arcs -ftest-coverage -fno-inline -fno-inline-small-functions -fno-default-inline -O0"
+        CACHE STRING "Flags used by the C++ compiler during coverage builds."
+        FORCE )
+SET( CMAKE_C_FLAGS_COVERAGE "-fPIC -fprofile-arcs -ftest-coverage" CACHE STRING
+        "Flags used by the C compiler during coverage builds."
+        FORCE )
+SET( CMAKE_EXE_LINKER_FLAGS_COVERAGE
+        "-lgcov" CACHE STRING
+        "Flags used for linking binaries during coverage builds."
+        FORCE )
+SET( CMAKE_SHARED_LINKER_FLAGS_COVERAGE
+        "-lgcov" CACHE STRING
+        "Flags used by the shared libraries linker during coverage builds."
+        FORCE )
+
+MARK_AS_ADVANCED(
+        CMAKE_CXX_FLAGS_COVERAGE
+        CMAKE_C_FLAGS_COVERAGE
+        CMAKE_EXE_LINKER_FLAGS_COVERAGE
+        CMAKE_SHARED_LINKER_FLAGS_COVERAGE)
+
+#-fsanitize-address-use-after-scope
+SET( CMAKE_CXX_FLAGS_ASAN " -g -fsanitize=address -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls"
+        CACHE STRING "Flags used by the C++ compiler during coverage builds."
+        FORCE )
+SET( CMAKE_C_FLAGS_ASAN " -g -fsanitize=address -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls" CACHE STRING
+        "Flags used by the C compiler during coverage builds."
+        FORCE )
+SET( CMAKE_EXE_LINKER_FLAG_ASAN
+        "-fsanitize=address" CACHE STRING
+        "Flags used for linking binaries during coverage builds."
+        FORCE )
+SET( CMAKE_SHARED_LINKER_FLAGS_ASAN
+        "-fsanitize=address" CACHE STRING
+        "Flags used by the shared libraries linker during coverage builds."
+        FORCE )
+MARK_AS_ADVANCED(
+    CMAKE_CXX_FLAGS_ASAN
+    CMAKE_C_FLAGS_ASAN
+    CMAKE_EXE_LINKER_FLAG_ASAN
+    CMAKE_SHARED_LINKER_FLAGS_ASAN)
+
+SET( CMAKE_CXX_FLAGS_UBSAN "-g -fno-omit-frame-pointer -fsanitize=undefined"
+        CACHE STRING "Flags used by the C++ compiler during ubsan builds."
+        FORCE )
+SET( CMAKE_C_FLAGS_UBSAN " -g -fno-omit-frame-pointer -fsanitize=undefined" CACHE STRING
+        "Flags used by the C compiler during ubsan builds."
+        FORCE )
+SET( CMAKE_EXE_LINKER_FLAGS_UBSAN
+        " -fsanitize=undefined" CACHE STRING
+        "Flags used for linking binaries during ubsan builds."
+        FORCE )
+SET( CMAKE_SHARED_LINKER_FLAGS_UBSAN
+        " -fsanitize=undefined" CACHE STRING
+        "Flags used by the shared libraries linker during ubsan builds."
+        FORCE )
+MARK_AS_ADVANCED(
+        CMAKE_CXX_FLAGS_UBSAN
+        CMAKE_C_FLAGS_UBSAN
+        CMAKE_EXE_LINKER_FLAGS_UBSAN
+        CMAKE_SHARED_LINKER_FLAGS_UBSAN)
+
+SET( CMAKE_CXX_FLAGS_TSAN " -g -fno-omit-frame-pointer -fsanitize=thread"
+        CACHE STRING "Flags used by the C++ compiler during tsan builds."
+        FORCE )
+SET( CMAKE_C_FLAGS_TSAN " -g -fno-omit-frame-pointer -fsanitize=thread" CACHE STRING
+        "Flags used by the C compiler during tsan builds."
+        FORCE )
+SET( CMAKE_EXE_LINKER_FLAGS_TSAN
+        " -fsanitize=thread" CACHE STRING
+        "Flags used for linking binaries during tsan builds."
+        FORCE )
+SET( CMAKE_SHARED_LINKER_FLAGS_TSAN
+        " -fsanitize=thread" CACHE STRING
+        "Flags used by the shared libraries linker during tsan builds."
+        FORCE )
+MARK_AS_ADVANCED(
+        CMAKE_CXX_FLAGS_TSAN
+        CMAKE_C_FLAGS_TSAN
+        CMAKE_EXE_LINKER_FLAGS_TSAN
+        CMAKE_SHARED_LINKER_FLAGS_TSAN)
+
+# Update the documentation string of CMAKE_BUILD_TYPE for GUIs
+SET( CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
+        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel COVERAGE ASAN UBSAN TSAN."
+        FORCE )
+
+if(CMAKE_CONFIGURATION_TYPES)
+  list(APPEND CMAKE_CONFIGURATION_TYPES COVERAGE ASAN UBSAN TSAN)
+  list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
+    "Add the configurations that we need"
+    FORCE)
+endif(CMAKE_CONFIGURATION_TYPES)
+
+endif(NOT ERBUILD_CONFIG_CMAKE_INCLUDED)
+
+
 function(ER_DEPS)
   find_program(ER_DPKGDEPS dpkgdeps HINTS ${CMAKE_CURRENT_FUNCTION_LIST_DIR} )
 
