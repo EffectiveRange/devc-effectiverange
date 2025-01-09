@@ -9,4 +9,4 @@ set -e
 STEP_DESCRIPTION="Installing python build dependecies"
 source "$(dirname $0)/../build_common"
 
-pip install flake8 mypy coverage pytest
+pip install flake8 mypy coverage pytest gcovr
