@@ -11,10 +11,10 @@ include(GNUInstallDirs)
 if( NOT ERBUILD_CONFIG_CMAKE_INCLUDED)
 set(ERBUILD_CONFIG_CMAKE_INCLUDED ON CACHE BOOL "erbuild config included")
 
-SET( CMAKE_CXX_FLAGS_COVERAGE "-fPIC -fprofile-arcs -ftest-coverage -fno-inline -fno-inline-small-functions -fno-default-inline -O0"
+SET( CMAKE_CXX_FLAGS_COVERAGE " -g -fPIC -fprofile-arcs -ftest-coverage -fno-inline -fno-inline-small-functions -fno-default-inline -O0"
         CACHE STRING "Flags used by the C++ compiler during coverage builds."
         FORCE )
-SET( CMAKE_C_FLAGS_COVERAGE "-fPIC -fprofile-arcs -ftest-coverage" CACHE STRING
+SET( CMAKE_C_FLAGS_COVERAGE " -g -fPIC -fprofile-arcs -ftest-coverage" CACHE STRING
         "Flags used by the C compiler during coverage builds."
         FORCE )
 SET( CMAKE_EXE_LINKER_FLAGS_COVERAGE
