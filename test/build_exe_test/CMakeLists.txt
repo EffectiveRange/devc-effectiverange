@@ -1,8 +1,8 @@
+cmake_minimum_required(VERSION 3.22)
 include(ERBuild NO_POLICY_SCOPE)
 
 project(test_exe_build VERSION 1.0.0 DESCRIPTION "This is a project to test the CMAKE build & pack environment")
 
-cmake_minimum_required(VERSION 3.22)
 
 ER_DEPS()
 

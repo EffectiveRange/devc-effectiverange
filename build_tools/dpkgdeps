@@ -141,7 +141,7 @@ def run_cmd(cmd):
     )
     assert p.stdout
     for line in iter(p.stdout.readline, ""):
-        get_logger().info(line.replace("\n", ""))
+        get_logger().info(line.replace("\n", "").strip())
     p.stdout.close()
     ret = p.wait()
     if ret != 0:
@@ -181,10 +181,10 @@ def run_in_hostroot_with_lock(target_arch: str, /, *args):
     run_with_lock(target_arch, run_in_hostroot, *args)
 
 
-def install_in_root(arch: str, installer, allDeps):
+def install_in_root(arch: str, runner, allDeps):
     pkgs = [d.specStr() for d in allDeps]
-    installer(arch, "apt", "update")
-    installer(
+    runner(arch, "apt", "update")
+    runner(
         arch,
         "apt",
         "install",
@@ -223,6 +223,13 @@ def main():
         install_in_hostroot(
             args, set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
         )
+        if args.arch != build_arch:
+            # TODO: factor out build root path as a parameter to script
+            run_in_hostroot_with_lock(
+                args.arch,
+                os.path.join(os.path.dirname(__file__), "fixbrokenlinks.sh"),
+                "/var/chroot/buildroot",
+            )
 
 
 def get_all_dependencies(arch: str, deps: dict):

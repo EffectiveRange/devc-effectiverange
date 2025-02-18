@@ -30,4 +30,5 @@ else
 fi
 
 ln -f -v -s /devc/build_tools/dpkgdeps /usr/bin/dpkgdeps
+ln -f -v -s /devc/build_tools/fixbrokenlinks.sh /usr/bin/fixbrokenlinks.sh
 ln -f -v -s /devc/build_tools/ERBuild.cmake $(find /usr/share/ -name ERBuild.cmake | head -n1)
