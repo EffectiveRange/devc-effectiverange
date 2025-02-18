@@ -12,6 +12,10 @@ echo "Usage: $0 <ARCH> [<TARGET>]"
 exit 1
 fi
 
+if [ $BUILD_ARCH == "arm64" ]
+then
+TARGET=AARCH64-BULLSEYE
+fi
 
 if [ -z "$TARGET" ]
 then
