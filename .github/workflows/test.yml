@@ -13,7 +13,7 @@ jobs:
     
     strategy:
         matrix:
-          architecture: ["armhf", "amd64"]
+          architecture: ["armhf", "amd64", "arm64"]
     
     steps:
       - name: Check out the repo
