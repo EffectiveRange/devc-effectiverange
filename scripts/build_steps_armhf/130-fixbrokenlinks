@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
+# SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
+# SPDX-License-Identifier: MIT
+
+set -e
+
+STEP_DESCRIPTION="Fixing broken symlinks in buildroot"
+source "$(dirname $0)/../build_common"
+
+"$(dirname $0)/../../build_tools/fixbrokenlinks.sh" /var/chroot/buildroot
+
