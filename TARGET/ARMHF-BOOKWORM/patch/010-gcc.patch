@@ -1,0 +1,11 @@
+--- libsanitizer/asan/asan_linux.cpp  2020-07-23 06:35:19.124404163 +0000
++++ libsanitizer/asan/asan_linux.cpp    2023-05-30 11:48:50.534824282 +0000
+@@ -29,6 +29,7 @@
+ #include <sys/mman.h>
+ #include <sys/syscall.h>
+ #include <sys/types.h>
++#include <linux/limits.h>
+ #include <dlfcn.h>
+ #include <fcntl.h>
+ #include <limits.h>
+

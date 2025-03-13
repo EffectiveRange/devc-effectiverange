@@ -21,6 +21,14 @@ jobs:
     with:
       arch: "armhf"
 
+  call_build_cross_base-armhf-bookworm:
+    uses: ./.github/workflows/docker-image-cross.yml
+    secrets: inherit
+    with:
+      arch: "armhf"
+      target: "ARMHF-BOOKWORM"
+      base_ver: "bookworm-slim"
+
   call_build_and_publish_images-armhf:
     needs: call_build_cross_base-armhf
     uses: ./.github/workflows/docker-image-single.yml
@@ -30,6 +38,16 @@ jobs:
       base_repo: "effectiverange/armhf-tools-cross"
       base_ver:  ${{needs.call_build_cross_base-armhf.outputs.imagever}}
  
+  call_build_and_publish_images-armhf-bookworm:
+    needs: call_build_cross_base-armhf-bookworm
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "armhf"
+      base_repo: "effectiverange/armhf-bookworm-tools-cross"
+      base_ver:  ${{needs.call_build_cross_base-armhf-bookworm.outputs.imagever}}      
+      target: "ARMHF-BOOKWORM"
+
   call_build_cross_base-arm64:
     uses: ./.github/workflows/docker-image-cross.yml
     secrets: inherit
@@ -52,6 +70,14 @@ jobs:
     secrets: inherit
     with:
       arch: "amd64"
+
+  call_build_and_publish_images-amd64-bookworm:
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "amd64"
+      base_ver: "bookworm-slim"
+    
 
   create_release:
     name: Create Release
