@@ -45,7 +45,7 @@ The top level entry point is the `scripts/build_all[_$ARCH]` which is executed f
 ### Unified build container layout
 
 ### Details
-The build_all script invokes the `build_cross_tools_armhf` script, that in turn executes the build steps from `scripts/build_steps_armhf` in order. The build steps are - and should be - written in a way so that they are individually executable for easier troubleshooting. E.g. while troubleshooting a build and there's an error at one step you can invoke
+The build_all script invokes the `build_cross_tools` script, that in turn executes the build steps from `scripts/build_steps_armhf` in order. The build steps are - and should be - written in a way so that they are individually executable for easier troubleshooting. E.g. while troubleshooting a build and there's an error at one step you can invoke
 ```bash
 root@1231a9c601e7:/tmp/build#/home/crossbuilder/scripts/build_steps_armhf/80-kernelmodulebuildstep /home/crossbuilder/target
 ```

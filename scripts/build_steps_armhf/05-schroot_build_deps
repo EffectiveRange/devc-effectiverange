@@ -27,5 +27,4 @@ chroot /var/chroot/buildroot pip install stdeb
 chroot /var/chroot/buildroot apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev
 
 # Install python build packages
-# NOTE: https://github.com/scikit-build/ninja-python-distributions/issues/226 latest ninja fails to build
-chroot /var/chroot/buildroot pip3 install wheel ninja==1.10.2.3 patchelf meson
+chroot /var/chroot/buildroot pip3 install wheel ninja patchelf meson

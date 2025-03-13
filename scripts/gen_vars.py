@@ -164,13 +164,13 @@ def rpi_source_to_apt(envkey: str):
 
 def get_apt_sources(s: str, arch: str):
     return set(
-        re.sub("^deb ", f"deb [arch={arch}] ", repo)
+        re.sub("^deb ", f"deb [arch={arch}] ", repo) if "arch=" not in repo else repo
         for repo in re.findall('"([^"]+)"', s)
     )
 
 
 rpi_kernel_ver = os.environ.get("KERNEL_VER") or ""
-kernel_ver = rpi_kernel_ver.rstrip("+").split("-v")[0]
+kernel_ver = rpi_kernel_ver.split("+")[0]
 target = os.environ.get("GCC_MACHINE")
 
 binutils_ver = get_version_from_apt_info("BINUTILS_INFO")

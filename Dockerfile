@@ -22,8 +22,8 @@ COPY --chown=crossbuilder:crossbuilder $TARGET_DIR /home/crossbuilder/target
 RUN touch /home/crossbuilder/target.$(basename $TARGET_DIR)
 
 # Non-interactive configuration of tzdata
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN true
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN { echo 'tzdata tzdata/Areas select Etc'; echo 'tzdata tzdata/Zones/Etc select UTC'; } | debconf-set-selections
 
 RUN /bin/bash  -o pipefail -c " KEEP_BUILD_ARTIFACTS=$KEEP_BUILD_ARTIFACTS /home/crossbuilder/scripts/build_all $BUILD_ARCH 2>&1 | tee /tmp/build.log"
