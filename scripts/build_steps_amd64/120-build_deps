@@ -22,5 +22,4 @@ apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgire
 pip install stdeb
 
 # Install python build packages
-# NOTE: https://github.com/scikit-build/ninja-python-distributions/issues/226 latest ninja fails to build
-pip3 install wheel ninja==1.10.2.3 patchelf meson
+pip3 install wheel ninja patchelf meson

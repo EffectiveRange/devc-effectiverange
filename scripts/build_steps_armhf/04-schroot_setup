@@ -26,6 +26,7 @@ echo "${repo}" >> /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
 done
 
 chroot  /var/chroot/buildroot apt update
+# TODO: this should not be necessary on bookworm, figure out a way to conditionally install
 chroot  /var/chroot/buildroot apt install -y raspberrypi-kernel-headers
 
 

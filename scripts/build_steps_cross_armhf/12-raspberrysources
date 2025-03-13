@@ -1,8 +1,8 @@
 #!/bin/bash
-
 # SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
+set -x
 
 STEP_DESCRIPTION="Downloading and setting up raspberry sources"
 source "$(dirname $0)/../build_common"
@@ -18,9 +18,12 @@ dpkg --force-all --root=$(pwd)/../rpi-kernel -i raspberrypi-kernel-headers*.deb
 
 cd ..
 
-echo "Syncing rpi kernel to vanilla source"
-rsync -av --progress rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
-
+# This is only required for bullseye
+if [ -d "rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}" ]
+then
+    echo "Syncing rpi kernel to vanilla source"
+    rsync -av --progress rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
+fi
 
 echo "Downloading rpi libc source with patches"
 

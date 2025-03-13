@@ -19,7 +19,7 @@ build_driver:
 cross-armhf: build_driver
 	CROSS_IMG_VER=$$(./scripts/gen_cross_hash $(DEVC_ARCH) TARGET/$(TARGET_NAME) 2>/dev/null ); echo Cross image version is $$CROSS_IMG_VER ;\
 	if [ "$$(./scripts/check_cross_base $(DEVC_ARCH) TARGET/$(TARGET_NAME))" = "true" ]; then \
-		docker buildx build --file Dockerfile-cross --tag effectiverange/$(DEVC_ARCH)-tools-cross$(:)$$CROSS_IMG_VER --build-arg BASE_IMAGE_VER=$(CROSS_BASE_IMAGE_VER) --build-arg TARGET_DIR=TARGET/$(TARGET_NAME) --build-arg KEEP_BUILD_ARTIFACTS=$(KEEP_BUILD_ARTIFACTS) . ;\
+		docker buildx build --file Dockerfile-cross --tag effectiverange/$(DEVC_ARCH)-$(subst -slim,,$(CROSS_BASE_IMAGE_VER))-tools-cross$(:)$$CROSS_IMG_VER --build-arg BASE_IMAGE_VER=$(CROSS_BASE_IMAGE_VER) --build-arg TARGET_DIR=TARGET/$(TARGET_NAME) --build-arg KEEP_BUILD_ARTIFACTS=$(KEEP_BUILD_ARTIFACTS) . ;\
 	fi 
 
 base-armhf: cross-armhf
