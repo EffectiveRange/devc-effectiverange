@@ -19,6 +19,10 @@ on:
         required: false
         type: string
         default: "ARMHF-BULLSEYE"
+      base_ver:
+        required: false
+        type: string
+        default: "bullseye-slim"   
     outputs:
       imageid:
         description: "The docker image ID for the cross base image that's built"
@@ -62,6 +66,7 @@ jobs:
           build-args: |
            TARGET_DIR=TARGET/${{ inputs.target }}
            BUILD_ARCH=${{ inputs.arch }}
+           BASE_IMAGE_VER=${{ inputs.base_ver }}
           tags: ${{ steps.meta.outputs.tags }}
     outputs:
       imageid: ${{ steps.dbuild.outputs.imageid }}
