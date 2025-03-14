@@ -52,7 +52,8 @@ jobs:
         run: |
           export ER_IMG_TAG="$(./scripts/gen_cross_hash ${{ inputs.arch }}  ./TARGET/${{ inputs.target }})"
           echo "version=$ER_IMG_TAG" >> $GITHUB_OUTPUT
-          echo "tags=effectiverange/${{ inputs.arch }}-tools-cross:$ER_IMG_TAG" >> $GITHUB_OUTPUT
+          BASE_VER=$(echo ${{ inputs.base_ver }} | sed 's/-slim//')
+          echo "tags=effectiverange/${{ inputs.arch }}-$BASE_VER-tools-cross:$ER_IMG_TAG" >> $GITHUB_OUTPUT
           echo "generate_image=$(./scripts/check_cross_base ${{ inputs.arch }} ./TARGET/${{ inputs.target }})" >> $GITHUB_OUTPUT
         
       - name: Build and push Docker images
