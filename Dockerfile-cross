@@ -23,6 +23,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN { echo 'tzdata tzdata/Areas select Etc'; echo 'tzdata tzdata/Zones/Etc select UTC'; } | debconf-set-selections
 
-RUN /bin/bash  -o pipefail -c " KEEP_BUILD_ARTIFACTS=$KEEP_BUILD_ARTIFACTS /home/crossbuilder/scripts/build_cross_tools_armhf /home/crossbuilder/target -j 2>&1 | tee /tmp/build.log"
+RUN /bin/bash  -o pipefail -c " KEEP_BUILD_ARTIFACTS=$KEEP_BUILD_ARTIFACTS /home/crossbuilder/scripts/build_cross_tools /home/crossbuilder/target -j 2>&1 | tee /tmp/build.log"
 
 CMD ["/bin/bash"]
