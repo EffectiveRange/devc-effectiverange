@@ -13,7 +13,9 @@ CMAKE_VERSION=$(cmake --version | grep 'cmake version' | sed -r 's/cmake version
 
 cp -vf /home/crossbuilder/build_tools/ERBuild.cmake /usr/share/cmake-$CMAKE_VERSION/Modules/ || true
 
-pip install -r /home/crossbuilder/build_tools/requirements.txt
+apt install -y --no-install-recommends  python3-filelock
+# FIXME: fix this, convert dpkgdeps to genuine python package (installable)
+pip install  --break-system-packages  -r /home/crossbuilder/build_tools/requirements.txt
 
 install -v /home/crossbuilder/build_tools/dpkgdeps /usr/bin/
 install -v /home/crossbuilder/build_tools/fixbrokenlinks.sh /usr/bin/

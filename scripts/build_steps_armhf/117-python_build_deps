@@ -9,4 +9,7 @@ set -e
 STEP_DESCRIPTION="Installing python build dependecies"
 source "$(dirname $0)/../build_common"
 
-pip install flake8 mypy coverage pytest gcovr markdownify
+apt install -y --no-install-recommends python3-flake8 python3-mypy python3-coverage python3-pytest 
+
+pipx install gcovr
+pipx install markdownify
