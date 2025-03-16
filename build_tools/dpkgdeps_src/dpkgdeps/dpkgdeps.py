@@ -202,6 +202,9 @@ def install_in_hostroot(args, allDeps):
 
 
 def main():
+    import sys
+    sys.stderr.write(f"Invocation:{' '.join(sys.argv)}\n")
+    
     args = get_args()
     setup_logging(args)
     logger = get_logger()
@@ -358,7 +361,4 @@ def read_deps_json_recursive(args, depDir):
 
 
 if __name__ == "__main__":
-    import sys
-
-    sys.stderr.write(f"Invocation:{' '.join(sys.argv)}\n")
     main()

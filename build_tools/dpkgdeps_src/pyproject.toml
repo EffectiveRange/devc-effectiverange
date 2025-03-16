@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dpkgdeps"
+description = "Installation of project dependencies based on a json file, mainly used from cmake build scripts"
+dynamic = ["version"]
+dependencies = [
+  "traceback-with-variables",
+  "filelock"
+]
+authors = [
+  {name = "Effective Range Kft", email = "info@effective-range.com"},
+]
+maintainers = [
+  {name = "Effective Range Kft", email = "info@effective-range.com"},
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+
+[tool.setuptools_scm]
+
+[project.scripts]
+dpkgdeps = "dpkgdeps.dpkgdeps:main"
