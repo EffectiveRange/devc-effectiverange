@@ -26,7 +26,7 @@ fi
 
 python3 -m venv /tmp/testvenv
 
-/tmp/testvenv/bin/python3 -m pip install -r $(dirname $0)/build_tools/requirements.txt
+/tmp/testvenv/bin/python3 -m pip install $(dirname $0)/build_tools/dpkgdeps_src
 /tmp/testvenv/bin/python3 -m unittest discover -s $(dirname $0)/build_tools/  -p *test.py
 
 IMG_ID=$(uuidgen)
