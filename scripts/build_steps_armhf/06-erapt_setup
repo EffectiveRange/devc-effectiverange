@@ -16,12 +16,12 @@ echo "deb http://deb.debian.org/debian $DEBOOTSTRAP_TARGET-backports main" > /et
 echo "deb http://aptrepo.effective-range.com $DEBOOTSTRAP_TARGET main" > /etc/apt/sources.list.d/er.list
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C1AEE2EDBAEC37595801DDFAE15BC62117A4E0F3
 
+apt update
 # Setup in chroot as well
 if [ -d /var/chroot/buildroot ]
 then
   echo "deb http://aptrepo.effective-range.com $DEBOOTSTRAP_TARGET main" > /var/chroot/buildroot/etc/apt/sources.list.d/er.list
   chroot /var/chroot/buildroot apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C1AEE2EDBAEC37595801DDFAE15BC62117A4E0F3
   echo "deb http://deb.debian.org/debian $DEBOOTSTRAP_TARGET-backports main" > /var/chroot/buildroot/etc/apt/sources.list.d/backports.list
+  chroot /var/chroot/buildroot apt update
 fi
-
-apt update
