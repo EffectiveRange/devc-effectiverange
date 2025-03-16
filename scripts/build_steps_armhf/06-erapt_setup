@@ -9,15 +9,13 @@ STEP_DESCRIPTION="Setup Effective Range APT repository"
 source "$(dirname $0)/../build_common"
 
 
-#FIXME: we should be also using $DEBOOTSTRAP_TARGET instead of stable!!!
-
 # Setup in host container
-echo "deb http://aptrepo.effective-range.com stable main" > /etc/apt/sources.list.d/er.list
+echo "deb http://aptrepo.effective-range.com $DEBOOTSTRAP_TARGET main" > /etc/apt/sources.list.d/er.list
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C1AEE2EDBAEC37595801DDFAE15BC62117A4E0F3
 
 # Setup in chroot as well
 if [ -d /var/chroot/buildroot ]
 then
-  echo "deb http://aptrepo.effective-range.com stable main" > /var/chroot/buildroot/etc/apt/sources.list.d/er.list
+  echo "deb http://aptrepo.effective-range.com $DEBOOTSTRAP_TARGET main" > /var/chroot/buildroot/etc/apt/sources.list.d/er.list
   chroot /var/chroot/buildroot apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C1AEE2EDBAEC37595801DDFAE15BC62117A4E0F3
 fi
