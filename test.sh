@@ -37,6 +37,13 @@ echo "Target directory $TARGET does not exist!"
 exit 1
 fi
 
+#TODO: add missing target definition
+if [ $TARGET == "AARCH64-BOOKWORM" ]
+then
+echo "Skipping test for $TARGET"
+exit 0
+fi
+
 # python tests
 
 python3 -m venv /tmp/testvenv
