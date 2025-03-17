@@ -14,13 +14,15 @@ TARGET_DIR=$2
 
 CROSS_IMG_VER=$("$ROOT_DIR/gen_cross_hash" $BUILD_ARCH "$TARGET_DIR" 2>/dev/null )
 
-if docker inspect effectiverange/$BUILD_ARCH-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1 
+VERSION_CODENAME=$(grep VERSION_CODENAME= "$TARGET_DIR"/target | cut -d= -f2)
+
+if docker inspect effectiverange/$BUILD_ARCH-$VERSION_CODENAME-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1 
 then
     echo 'false'
     exit
 fi
 
-if docker manifest inspect  effectiverange/$BUILD_ARCH-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1
+if docker manifest inspect  effectiverange/$BUILD_ARCH-$VERSION_CODENAME-tools-cross:$CROSS_IMG_VER > /dev/null 2>&1
 then
     echo 'false'
     exit
