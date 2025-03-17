@@ -34,11 +34,11 @@ base-arm64: cross-armhf
 
 
 devc-armhf:
-	docker buildx build --file Dockerfile-devc --tag effectiverange/er-devc-armhf-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/armhf-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=armhf .
+	docker buildx build --file Dockerfile-devc --tag effectiverange/er-devc-armhf-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/armhf-$(BASE_DISTRO)-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=armhf .
 
 devc-amd64:
-	docker buildx build --file Dockerfile-devc --tag  effectiverange/er-devc-amd64-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/amd64-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=amd64 .
+	docker buildx build --file Dockerfile-devc --tag  effectiverange/er-devc-amd64-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/amd64-$(BASE_DISTRO)-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=amd64 .
 
 devc-arm64:
-	docker build --file Dockerfile-devc --tag  effectiverange/er-devc-arm64-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/arm64-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=arm64 .
+	docker build --file Dockerfile-devc --tag  effectiverange/er-devc-arm64-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/arm64-$(BASE_DISTRO)-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=arm64 .
 

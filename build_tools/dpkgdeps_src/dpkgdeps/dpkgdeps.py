@@ -44,7 +44,7 @@ depRe = re.compile(r"(?P<name>[^:]+)(?::(?P<arch>\w+))?(?:=(?P<ver>[\w\.\+-]+))?
 def get_os_release():
     with open("/etc/os-release") as f:
         os_release = "".join(f.readlines())
-        m = re.match(r"VERSION_CODENAME=(\w+)", os_release)
+        m = re.match(r".*VERSION_CODENAME=(\w+).*", os_release, re.DOTALL)
         if m is None:
             raise ValueError("Cannot determine OS release")
         return m.group(1)

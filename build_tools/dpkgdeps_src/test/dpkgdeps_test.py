@@ -1,4 +1,9 @@
-from dpkgdeps.dpkgdeps import deb_deps_str, get_all_dependencies, retrieve_deps
+from dpkgdeps.dpkgdeps import (
+    deb_deps_str,
+    get_all_dependencies,
+    get_os_release,
+    retrieve_deps,
+)
 
 import unittest
 import json
@@ -203,6 +208,10 @@ class Test(unittest.TestCase):
         deps_bw = deb_deps_str(self.multidistro_deps(), "armhf", "bookworm")
         self.assertIn("libprotobuf32", deps_bw)
         self.assertNotIn("libprotobuf23", deps_bw)
+
+    def test_version_codename(self):
+        codename = get_os_release()
+        self.assertTrue(codename is not None)
 
 
 if __name__ == "__main__":
