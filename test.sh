@@ -8,18 +8,22 @@ TARGET="$2"
 
 if [ -z "$BUILD_ARCH" ]
 then
-echo "Usage: $0 <ARCH> [<TARGET>]"
+echo "Usage: $0  <BUILD_ARCH> [<TARGET>]"
 exit 1
-fi
-
-if [ $BUILD_ARCH == "arm64" ]
-then
-TARGET=AARCH64-BULLSEYE
 fi
 
 if [ -z "$TARGET" ]
 then
-TARGET=ARMHF-BULLSEYE
+echo "Usage: $0  [<TARGET>]"
+exit 1
+fi
+
+DISTRO=$(grep "VERSION_CODENAME=" $(dirname $0)/TARGET/$TARGET/target | cut -d "=" -f 2)
+
+if [ -z "$DISTRO" ]
+then
+echo "Not able to determine the distro from file $(dirname $0)/TARGET/$TARGET/target"
+exit 1
 fi
 
 # python tests
@@ -27,15 +31,15 @@ fi
 python3 -m venv /tmp/testvenv
 
 /tmp/testvenv/bin/python3 -m pip install $(dirname $0)/build_tools/dpkgdeps_src
-/tmp/testvenv/bin/python3 -m unittest discover -s $(dirname $0)/build_tools/  -p *test.py
+/tmp/testvenv/bin/python3 -m unittest discover -s $(dirname $0)/build_tools/dpkgdeps_src/test/  -p *test.py
 
 IMG_ID=$(uuidgen)
 
-make -C "$(dirname $0)" base-$BUILD_ARCH TARGET_NAME=$TARGET IMG_TAG=$IMG_ID
+make -C "$(dirname $0)" base-$BUILD_ARCH TARGET_NAME=$TARGET CROSS_BASE_IMAGE_VER=$DISTRO-slim IMG_TAG=$IMG_ID
 
-make -C "$(dirname $0)" devc-$BUILD_ARCH  IMG_TAG=$IMG_ID BASE_IMAGE_VER=$IMG_ID
+make -C "$(dirname $0)" devc-$BUILD_ARCH  IMG_TAG=$IMG_ID BASE_IMAGE_VER=$IMG_ID CROSS_BASE_IMAGE_VER=$DISTRO-slim
 
-make -C "$(dirname $0)/test" clean test BASE_IMAGE_REPO=effectiverange/er-devc-$BUILD_ARCH   BASE_IMAGE_VER=$IMG_ID 
+make -C "$(dirname $0)/test" clean test BASE_IMAGE_REPO=effectiverange/er-devc-$BUILD_ARCH-$DISTRO   BASE_IMAGE_VER=$IMG_ID 
 
 
 
