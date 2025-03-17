@@ -10,5 +10,5 @@ source "$(dirname $0)/../build_common"
 set -o pipefail
 mkdir -p /var/chroot/
 rm -rf /var/chroot/buildroot
-debootstrap --arch=${RPI_APT_ARCH} --verbose --foreign --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot http://deb.debian.org/debian
+debootstrap --arch=${RPI_APT_ARCH} --verbose --foreign --include=libc-bin,dash --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot http://deb.debian.org/debian
 chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage
