@@ -12,3 +12,8 @@ mkdir -p /var/chroot/
 rm -rf /var/chroot/buildroot
 debootstrap --arch=${RPI_APT_ARCH} --verbose --foreign --include=libc-bin,dash --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot http://deb.debian.org/debian
 chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage
+if [ $? -ne 0 ]; then
+  echo "Debootstrap failed"
+  cat /debootstrap/debootstrap.log
+  exit 1
+fi
