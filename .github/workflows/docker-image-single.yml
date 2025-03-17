@@ -34,7 +34,7 @@ on:
 jobs:
   build_base_image:
     name: Push Docker base image to dockerhub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -77,7 +77,7 @@ jobs:
   build_devc_image:
     needs: build_base_image 
     name: Build and push devc image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
