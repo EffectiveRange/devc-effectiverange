@@ -14,6 +14,7 @@ jobs:
     strategy:
         matrix:
           architecture: ["armhf", "amd64", "arm64"]
+          distro: ["bullseye", "bookworm"]
     
     steps:
       - name: Check out the repo
@@ -27,4 +28,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME  }}
           password: ${{ secrets.DOCKERHUB_TOKEN  }}
       - name: Run CI tests
-        run: ${{github.workspace}}/test.sh ${{ matrix.architecture }}
+        run: ${{github.workspace}}/test.sh ${{ matrix.architecture }} ${{ matrix.distro }}
