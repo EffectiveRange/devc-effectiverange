@@ -17,4 +17,5 @@ else
     echo "Debootstrap failed"
     cat /var/chroot/buildroot/debootstrap/debootstrap.log || true
     cat /debootstrap/debootstrap.log || true
+    exit 1
 fi
