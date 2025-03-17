@@ -77,6 +77,7 @@ jobs:
     secrets: inherit
     with:
       arch: "amd64"
+      target: "ARMHF-BOOKWORM"
       base_ver: "bookworm-slim"
       distro: "bookworm"
     
