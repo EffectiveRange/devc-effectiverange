@@ -26,7 +26,7 @@ elif [ $BUILD_ARCH == "arm64" ]
 then
 TARGET=AARCH64-${DISTRO^^}
 else
-TARGET=$BUILD_ARCH-${DISTRO^^}
+TARGET=${BUILD_ARCH^^}-${DISTRO^^}
 fi
 
 
