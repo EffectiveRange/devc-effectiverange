@@ -170,7 +170,7 @@ def get_apt_sources(s: str, arch: str):
 
 
 rpi_kernel_ver = os.environ.get("KERNEL_VER") or ""
-kernel_ver = rpi_kernel_ver.split("+")[0]
+kernel_ver = rpi_kernel_ver.split("+")[0].split("-")[0]
 target = os.environ.get("GCC_MACHINE")
 
 binutils_ver = get_version_from_apt_info("BINUTILS_INFO")
