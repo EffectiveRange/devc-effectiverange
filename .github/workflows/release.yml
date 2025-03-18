@@ -106,7 +106,7 @@ jobs:
     permissions:
       contents: write
       discussions: write
-    needs: [call_build_and_publish_images-armhf-bullseye,call_build_and_publish_images-amd64-bullseye,call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bullseye]
+    needs: [call_build_and_publish_images-armhf-bullseye,call_build_and_publish_images-amd64-bullseye,call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bullseye,call_build_and_publish_images-arm64-bookworm]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
