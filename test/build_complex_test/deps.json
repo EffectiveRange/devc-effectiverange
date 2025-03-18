@@ -6,9 +6,18 @@
             "arch": [
                 "armhf"
             ]
-        },
-        "libprotobuf23"
+        }
     ],
+    "bullseye":{
+        "deps":[
+            "libprotobuf23"
+        ]
+    },
+    "bookworm":{
+        "deps":[
+            "libprotobuf32"
+        ]
+    },
     "build_deps": [
         "libc6-dev",
         {

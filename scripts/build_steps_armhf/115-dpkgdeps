@@ -13,7 +13,7 @@ CMAKE_VERSION=$(cmake --version | grep 'cmake version' | sed -r 's/cmake version
 
 cp -vf /home/crossbuilder/build_tools/ERBuild.cmake /usr/share/cmake-$CMAKE_VERSION/Modules/ || true
 
-pipx install  /home/crossbuilder/build_tools/dpkgdeps_src
+pipx install --global /home/crossbuilder/build_tools/dpkgdeps_src
 
 install -v /home/crossbuilder/build_tools/fixbrokenlinks.sh /usr/bin/
 

@@ -41,6 +41,15 @@ def pushd(new_dir):
 depRe = re.compile(r"(?P<name>[^:]+)(?::(?P<arch>\w+))?(?:=(?P<ver>[\w\.\+-]+))?")
 
 
+def get_os_release():
+    with open("/etc/os-release") as f:
+        os_release = "".join(f.readlines())
+        m = re.match(r".*VERSION_CODENAME=(\w+).*", os_release, re.DOTALL)
+        if m is None:
+            raise ValueError("Cannot determine OS release")
+        return m.group(1)
+
+
 @dataclass(frozen=True, eq=True)
 class Dependency:
     name: str
@@ -85,13 +94,20 @@ def parseDependency(entry: Union[str, dict], arch: str) -> Optional[Dependency]:
     return None
 
 
-def get_deps_impl(deps: dict, key: str, arch: str):
-    depSet: set[Dependency] = set(
-        dep for d in deps.get(key, []) if (dep := parseDependency(d, arch)) is not None
-    )
+def get_deps_impl(deps: dict, key: str, arch: str, distro: str):
+    depSet = get_deps_by_key(deps, key, arch)
+    distro_deps = deps.get(distro, {})
+    return depSet.union(get_deps_by_key(distro_deps, key, arch))
     # NOTE: It's enough to fetch direct dependencies, as if the packaging is correct
     # then there's no need for the transitive dependencies
     # In such case, for now we will add it into deps.json directly
+
+
+def get_deps_by_key(deps, key, arch):
+    depSet: set[Dependency] = set(
+        dep for d in deps.get(key, []) if (dep := parseDependency(d, arch)) is not None
+    )
+
     return depSet
 
 
@@ -100,23 +116,23 @@ def get_ignore_deps(deps, arch):
     return ignored
 
 
-def get_deps(deps: dict, arch: str):
-    return get_deps_impl(deps, "deps", arch)
+def get_deps(deps: dict, arch: str, distro: str):
+    return get_deps_impl(deps, "deps", arch, distro)
 
 
-def get_build_deps(deps: dict, arch: str):
-    return get_deps_impl(deps, "build_deps", arch)
+def get_build_deps(deps: dict, arch: str, distro: str):
+    return get_deps_impl(deps, "build_deps", arch, distro)
 
 
-def deb_deps_str(deps: dict, arch: str):
+def deb_deps_str(deps: dict, arch: str, distro: str):
     # TODO: add support for versioning!!!
-    pkg_deps, _ = retrieve_deps(deps, arch)
+    pkg_deps, _ = retrieve_deps(deps, arch, distro)
     d = sorted(d.name for d in pkg_deps)
     return ",".join(d)
 
 
-def print_deb_deps(deps: dict, arch: str):
-    print(deb_deps_str(deps, arch))
+def print_deb_deps(deps: dict, arch: str, distro: str):
+    print(deb_deps_str(deps, arch, distro))
 
 
 def run_in_buildroot(target_arch: str, /, *args):
@@ -203,8 +219,9 @@ def install_in_hostroot(args, allDeps):
 
 def main():
     import sys
+
     sys.stderr.write(f"Invocation:{' '.join(sys.argv)}\n")
-    
+
     args = get_args()
     setup_logging(args)
     logger = get_logger()
@@ -217,11 +234,11 @@ def main():
             return
 
         # add ignore from parent to child
-
+        os_release = get_os_release()
         if args.debdeps:
-            print_deb_deps(deps, args.arch)
+            print_deb_deps(deps, args.arch, os_release)
             return
-        all_deps = get_all_dependencies(args.arch, deps)
+        all_deps = get_all_dependencies(args.arch, os_release, deps)
         install_in_buildroot(args, all_deps)
         install_in_hostroot(
             args, set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
@@ -230,13 +247,13 @@ def main():
             # TODO: factor out build root path as a parameter to script
             run_in_hostroot_with_lock(
                 args.arch,
-                os.path.join(os.path.dirname(__file__), "fixbrokenlinks.sh"),
+                "/usr/bin/fixbrokenlinks.sh",
                 "/var/chroot/buildroot",
             )
 
 
-def get_all_dependencies(arch: str, deps: dict):
-    pkg_deps, build_deps = retrieve_deps(deps, arch)
+def get_all_dependencies(arch: str, distro: str, deps: dict):
+    pkg_deps, build_deps = retrieve_deps(deps, arch, distro)
     return pkg_deps.union(build_deps)
 
 
@@ -323,15 +340,27 @@ def gen_cache_digest(allDeps):
     return digest
 
 
-def retrieve_deps(deps, arch: str):
-    pkgDeps = get_deps(deps, arch)
-    buildDeps = get_build_deps(deps, arch)
+def retrieve_deps(deps, arch: str, distro: str):
+    pkgDeps = get_deps(deps, arch, distro)
+    buildDeps = get_build_deps(deps, arch, distro)
     return pkgDeps, buildDeps
+
+
+def concat_elem(old, new):
+    if isinstance(old, list) and isinstance(new, list):
+        return old + new
+    if isinstance(old, dict) and isinstance(new, dict):
+        return merge_json(old, new)
+    if isinstance(old, list) and len(old) == 0:
+        return new
+    if isinstance(new, list) and len(new) == 0:
+        return old
+    raise ValueError(f"Cannot merge {old} and {new}")
 
 
 def merge_json(old: dict, new: dict):
     return {
-        key: old.get(key, []) + new.get(key, [])
+        key: concat_elem(old.get(key, []), new.get(key, []))
         for key in set(itertools.chain(old.keys(), new.keys()))
     }
 

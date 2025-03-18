@@ -5,6 +5,8 @@
 		}
 	],
 	"settings": {
-		"makefile.configureOnOpen": false
+		"makefile.configureOnOpen": false,
+		"editor.formatOnSave": true,
+		"python.testing.unittestEnabled": true,
 	}
 }
