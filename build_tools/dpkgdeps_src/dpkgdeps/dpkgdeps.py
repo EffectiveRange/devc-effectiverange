@@ -96,15 +96,11 @@ def parseDependency(entry: Union[str, dict], arch: str) -> Optional[Dependency]:
 
 def get_deps_impl(deps: dict, key: str, arch: str, distro: str):
     depSet = get_deps_by_key(deps, key, arch)
-    version = deps.get("version", 1)
-    if version >= 2:
-        distro_deps = deps.get(distro, {})
-        return depSet.union(get_deps_by_key(distro_deps, key, arch))
-
+    distro_deps = deps.get(distro, {})
+    return depSet.union(get_deps_by_key(distro_deps, key, arch))
     # NOTE: It's enough to fetch direct dependencies, as if the packaging is correct
     # then there's no need for the transitive dependencies
     # In such case, for now we will add it into deps.json directly
-    return depSet
 
 
 def get_deps_by_key(deps, key, arch):
@@ -350,9 +346,21 @@ def retrieve_deps(deps, arch: str, distro: str):
     return pkgDeps, buildDeps
 
 
+def concat_elem(old, new):
+    if isinstance(old, list) and isinstance(new, list):
+        return old + new
+    if isinstance(old, dict) and isinstance(new, dict):
+        return merge_json(old, new)
+    if isinstance(old, list) and len(old) == 0:
+        return new
+    if isinstance(new, list) and len(new) == 0:
+        return old
+    raise ValueError(f"Cannot merge {old} and {new}")
+
+
 def merge_json(old: dict, new: dict):
     return {
-        key: old.get(key, []) + new.get(key, [])
+        key: concat_elem(old.get(key, []), new.get(key, []))
         for key in set(itertools.chain(old.keys(), new.keys()))
     }
 

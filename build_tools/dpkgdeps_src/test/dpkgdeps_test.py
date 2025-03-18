@@ -2,6 +2,7 @@ from dpkgdeps.dpkgdeps import (
     deb_deps_str,
     get_all_dependencies,
     get_os_release,
+    merge_json,
     retrieve_deps,
 )
 
@@ -212,6 +213,10 @@ class Test(unittest.TestCase):
     def test_version_codename(self):
         codename = get_os_release()
         self.assertTrue(codename is not None)
+
+    def test_merge_json(self):
+        merged = merge_json(self.simple_deps(), self.multidistro_deps())
+        self.assertEqual(merged["version"], 2)
 
 
 if __name__ == "__main__":
