@@ -247,7 +247,7 @@ def main():
             # TODO: factor out build root path as a parameter to script
             run_in_hostroot_with_lock(
                 args.arch,
-                os.path.join(os.path.dirname(__file__), "fixbrokenlinks.sh"),
+                "/usr/bin/fixbrokenlinks.sh",
                 "/var/chroot/buildroot",
             )
 
