@@ -12,9 +12,12 @@ echo "Downloading raspberry packages"
 mkdir -p rpi-deb
 cd rpi-deb
 
-apt download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}
-
+if apt download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}
+then
 dpkg --force-all --root=$(pwd)/../rpi-kernel -i raspberrypi-kernel-headers*.deb 
+else
+    echo "Failed to download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}"
+fi
 
 cd ..
 
