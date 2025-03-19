@@ -30,6 +30,7 @@ fi
 
 echo "Downloading rpi libc source with patches"
 
+# this creates the glibc directory, as it unpacks the archive
 apt-get source libc6:${RPI_APT_ARCH}
 
 CURRENT_GLIBC_VER="$(ls -1r glibc*.tar.xz | tail -1 )"
@@ -44,6 +45,8 @@ CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER#glibc_}"
 CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%+*}"
 
 LIBC6_BASE_VERSION="${LIBC6_VERSION%+*}"
+# strip an additional layer of patch versioning
+LIBC6_BASE_VERSION="${LIBC6_BASE_VERSION%+*}"
 
 if [ "$LIBC6_BASE_VERSION" != "$CURRENT_GLIBC_VER" ]; then
     echo "Base versions mismatch between libc versions $LIBC6_BASE_VERSION != $CURRENT_GLIBC_VER"
