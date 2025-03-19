@@ -83,6 +83,7 @@ jobs:
       target: "AARCH64-BOOKWORM"
       base_repo: "effectiverange/arm64-bookworm-tools-cross"
       base_ver:  ${{needs.call_build_cross_base-arm64-bookworm.outputs.imagever}}
+      distro: "bookworm"
 
   call_build_and_publish_images-amd64-bullseye:
     uses: ./.github/workflows/docker-image-single.yml
