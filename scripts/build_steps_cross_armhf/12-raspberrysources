@@ -12,9 +12,12 @@ echo "Downloading raspberry packages"
 mkdir -p rpi-deb
 cd rpi-deb
 
-apt download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}
-
+if apt download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}
+then
 dpkg --force-all --root=$(pwd)/../rpi-kernel -i raspberrypi-kernel-headers*.deb 
+else
+    echo "Failed to download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}"
+fi
 
 cd ..
 
@@ -27,6 +30,7 @@ fi
 
 echo "Downloading rpi libc source with patches"
 
+# this creates the glibc directory, as it unpacks the archive
 apt-get source libc6:${RPI_APT_ARCH}
 
 CURRENT_GLIBC_VER="$(ls -1r glibc*.tar.xz | tail -1 )"
@@ -37,10 +41,11 @@ CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%.*.*.*}"
 # Droppig glibc_ prefix
 CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER#glibc_}"
 
-# Dropping the last element from CURRENT_GLIBC_VER
-CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%+*}"
+# Dropping the patch version from GLIBC versions
+CURRENT_GLIBC_VER=$(echo $CURRENT_GLIBC_VER | cut -d'+' -f1)
 
-LIBC6_BASE_VERSION="${LIBC6_VERSION%+*}"
+LIBC6_BASE_VERSION=$(echo $LIBC6_VERSION | cut -d'+' -f1)
+
 
 if [ "$LIBC6_BASE_VERSION" != "$CURRENT_GLIBC_VER" ]; then
     echo "Base versions mismatch between libc versions $LIBC6_BASE_VERSION != $CURRENT_GLIBC_VER"

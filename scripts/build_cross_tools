@@ -31,6 +31,8 @@ TMP_FILE="$(mktemp)"
 
 "$ROOT_DIR/gen_vars" "$@" > "$TMP_FILE"
 
+cat "$TMP_FILE"
+
 . "$TMP_FILE"
 
 

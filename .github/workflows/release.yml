@@ -56,6 +56,14 @@ jobs:
       arch: "arm64"
       target: "AARCH64-BULLSEYE"
 
+  call_build_cross_base-arm64-bookworm:
+    uses: ./.github/workflows/docker-image-cross.yml
+    secrets: inherit
+    with:
+      arch: "arm64"
+      target: "AARCH64-BOOKWORM"
+      base_ver: "bookworm-slim"
+
   call_build_and_publish_images-arm64-bullseye:
     needs: call_build_cross_base-arm64-bullseye
     uses: ./.github/workflows/docker-image-single.yml
@@ -64,6 +72,16 @@ jobs:
       arch: "arm64"
       target: "AARCH64-BULLSEYE"
       base_repo: "effectiverange/arm64-bullseye-tools-cross"
+      base_ver:  ${{needs.call_build_cross_base-arm64-bullseye.outputs.imagever}}
+
+  call_build_and_publish_images-arm64-bookworm:
+    needs: call_build_cross_base-arm64-bookworm
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "arm64"
+      target: "AARCH64-BOOKWORM"
+      base_repo: "effectiverange/arm64-bookworm-tools-cross"
       base_ver:  ${{needs.call_build_cross_base-arm64-bullseye.outputs.imagever}}
 
   call_build_and_publish_images-amd64-bullseye:
@@ -88,7 +106,7 @@ jobs:
     permissions:
       contents: write
       discussions: write
-    needs: [call_build_and_publish_images-armhf-bullseye,call_build_and_publish_images-amd64-bullseye,call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bullseye]
+    needs: [call_build_and_publish_images-armhf-bullseye,call_build_and_publish_images-amd64-bullseye,call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bullseye,call_build_and_publish_images-arm64-bookworm]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

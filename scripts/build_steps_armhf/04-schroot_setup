@@ -27,7 +27,7 @@ done
 
 chroot  /var/chroot/buildroot apt update
 # TODO: this should not be necessary on bookworm, figure out a way to conditionally install
-chroot  /var/chroot/buildroot apt install -y raspberrypi-kernel-headers
+chroot  /var/chroot/buildroot apt install -y raspberrypi-kernel-headers || true
 
 
 # Create schroot profile

@@ -30,13 +30,6 @@ TARGET=${BUILD_ARCH^^}-${DISTRO^^}
 fi
 
 
-#TODO: add missing target definition
-if [ $TARGET == "AARCH64-BOOKWORM" ]
-then
-echo "Skipping test for $TARGET"
-exit 0
-fi
-
 if [ ! -d "$ROOT_DIR/TARGET/$TARGET" ]
 then
 echo "Target directory $TARGET does not exist!"
