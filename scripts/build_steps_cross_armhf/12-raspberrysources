@@ -41,12 +41,11 @@ CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%.*.*.*}"
 # Droppig glibc_ prefix
 CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER#glibc_}"
 
-# Dropping the last element from CURRENT_GLIBC_VER
-CURRENT_GLIBC_VER="${CURRENT_GLIBC_VER%+*}"
+# Dropping the patch version from GLIBC versions
+CURRENT_GLIBC_VER=$(echo $CURRENT_GLIBC_VER | cut -d'+' -f1)
 
-LIBC6_BASE_VERSION="${LIBC6_VERSION%+*}"
-# strip an additional layer of patch versioning
-LIBC6_BASE_VERSION="${LIBC6_BASE_VERSION%+*}"
+LIBC6_BASE_VERSION=$(echo $LIBC6_VERSION | cut -d'+' -f1)
+
 
 if [ "$LIBC6_BASE_VERSION" != "$CURRENT_GLIBC_VER" ]; then
     echo "Base versions mismatch between libc versions $LIBC6_BASE_VERSION != $CURRENT_GLIBC_VER"
