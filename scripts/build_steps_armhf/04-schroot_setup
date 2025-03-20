@@ -26,8 +26,19 @@ echo "${repo}" >> /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
 done
 
 chroot  /var/chroot/buildroot apt update
-# TODO: this should not be necessary on bookworm, figure out a way to conditionally install
-chroot  /var/chroot/buildroot apt install -y raspberrypi-kernel-headers || true
+if [ $DEBOOTSTRAP_TARGET == "bullseye" ]
+then
+    chroot  /var/chroot/buildroot apt install --no-install-recommends -y raspberrypi-kernel-headers 
+elif [ $DEBOOTSTRAP_TARGET == "bookworm" ]
+then
+    for khdrpkg in "${RPI_KERNEL_HDR_VERSIONS[@]}"
+    do
+        chroot  /var/chroot/buildroot apt install --no-install-recommends -y ${khdrpkg}
+    done
+else
+    echo "Unhandled target $DEBOOTSTRAP_TARGET"
+    exit 1
+fi
 
 
 # Create schroot profile
