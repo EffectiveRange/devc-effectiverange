@@ -19,6 +19,7 @@ dump_apt_version LIBC6 libc6
 cat /etc/os-release
 echo "KERNEL_VER='$(uname -r)'"
 echo "MARCH='$(uname -m)'"
+echo "TARGET_ARCH='$(dpkg --print-architecture)'"
 echo "LIBC_INFO='$(apt list --installed libc6 2>/dev/null | tail -1)'"
 echo "LIBCPP_INFO='$(apt list --installed libstdc++6 2>/dev/null | tail -1)'"
 echo "BINUTILS_INFO='$(apt list --installed binutils 2>/dev/null | tail -1)'"
@@ -34,3 +35,4 @@ echo "LD_COMPRESSED_DEBUGINFO='$(readelf -t $TEMP_FILE.out | grep -A2 debug_abbr
 echo "BINUTILS_GOLD_LINKER="
 [ -e /usr/bin/gold ] && echo "BINUTILS_GOLD_LINKER='yes'"
 echo "LD_DEFAULT_GOLD='$(ld --version | grep gold)'"
+echo "RPI_KERNEL_VER_LIST='$(apt list --installed 2>/dev/null| grep linux-headers | grep -v linux-headers-rpi | grep -v '\-common-rpi' | cut -d'/' -f1 | tr '\n' ',')'"
