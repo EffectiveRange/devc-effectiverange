@@ -186,7 +186,9 @@ compressed_debuginfo = os.environ.get("LD_COMPRESSED_DEBUGINFO", "").strip()
 gold_default = os.environ.get("LD_DEFAULT_GOLD", "").strip()
 debootstrap_source = os.environ.get("DEBOOTSRAP_SOURCE", "").strip().rstrip("/")
 debootsrap_target = os.environ.get("VERSION_CODENAME", "").strip()
-
+rpi_kernel_vers = (
+    os.environ.get("RPI_KERNEL_VER_LIST", "").strip().strip(",").split(",")
+)
 
 pkgInfos = [rpi_source_to_apt(key) for key in ("RPI_KERNEL_HEADERS", "LIBC6")]
 arches = {i.arch for i in pkgInfos}
@@ -233,6 +235,7 @@ GLIBC_MAKE_FLAGS="{glibc_make_flags}"
 DEBOOTSTRAP_SOURCE="{debootstrap_source}"
 DEBOOTSTRAP_TARGET="{debootsrap_target}"
 TARGET_APT_SOURCES=({' '.join(quoted(r) for r in sorted(targetPkgRepos))})
+RPI_KERNEL_HDR_VERSIONS=({' '.join(quoted(r) for r in sorted(rpi_kernel_vers))})
 """
 )
 
