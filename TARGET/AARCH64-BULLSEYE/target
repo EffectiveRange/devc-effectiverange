@@ -14,6 +14,7 @@ SUPPORT_URL="https://www.debian.org/support"
 BUG_REPORT_URL="https://bugs.debian.org/"
 KERNEL_VER='6.1.21-v8+'
 MARCH='aarch64'
+TARGET_ARCH='arm64'
 LIBC_INFO='libc6/oldstable,now 2.31-13+rpt2+rpi1+deb11u11 arm64 [installed]'
 LIBCPP_INFO='libstdc++6/oldstable,now 10.2.1-6 arm64 [installed]'
 BINUTILS_INFO='binutils/oldstable,now 2.35.2-2 arm64 [installed,automatic]'
