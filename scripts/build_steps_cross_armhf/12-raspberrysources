@@ -18,13 +18,13 @@ then
     apt download raspberrypi-kernel-headers:${RPI_APT_ARCH}=${RPI_KERNEL_HEADERS_VERSION}
     dpkg --force-all --root=$(pwd)/../rpi-kernel -i raspberrypi-kernel-headers*.deb 
     echo "Syncing rpi kernel to vanilla source"
-    rsync -av --progress rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
+    rsync -av --progress ../rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
 elif [ $DEBOOTSTRAP_TARGET == "bookworm" ]
 then
     apt download linux-headers-${RPI_KERNEL_VERSION}:${RPI_APT_ARCH}
     dpkg --force-all --root=$(pwd)/../rpi-kernel -i linux-headers-*.deb 
     echo "Syncing rpi kernel to vanilla source"
-    rsync -av --progress rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
+    rsync -av --progress ../rpi-kernel/usr/src/linux-headers-${RPI_KERNEL_VERSION}/ "${LINUX_SRC_PATH}"
 else
     echo "Unhandled target $DEBOOTSTRAP_TARGET"
     exit 1
