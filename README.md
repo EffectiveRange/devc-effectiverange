@@ -19,4 +19,7 @@ ssh <device> "cat /boot/config-\$(uname -r) " > TARGET/<target name>/.config
 
 This command will extract the kernel configuration and save it locally.
 
+if this file is not present then the following might work
+ssh <device> "sudo modprobe configs && zcat /proc/config.gz" >  TARGET/<target name>/.config
+
 
