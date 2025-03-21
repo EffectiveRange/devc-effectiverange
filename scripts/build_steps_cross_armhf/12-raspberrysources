@@ -12,15 +12,27 @@ echo "Downloading raspberry packages"
 mkdir -p rpi-deb
 cd rpi-deb
 
-mkdir tmpinstall 
+if [ $DEBOOTSTRAP_TARGET == "bullseye" ]
+then
+    RPI_KERNEL_GIT_TAG=${RPI_KERNEL_HEADERS_VERSION#*:}
+    RPI_KERNEL_GIT_TAG=${RPI_KERNEL_GIT_TAG%-*}
+    git clone --branch=${RPI_KERNEL_GIT_TAG} --depth=1 https://github.com/raspberrypi/linux.git rpi-linux
+    cp -vf /home/crossbuilder/target/.config rpi-linux/.config
+    pushd rpi-linux
+    make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$INSTALL_PATH/$TARGET headers_install
+    popd
+elif [ $DEBOOTSTRAP_TARGET == "bookworm" ]
+then
+    apt-get source linux-source-${LINUX_KERNEL_MINOR_VERSION}
+    cp -vf /home/crossbuilder/target/.config linux-${LINUX_KERNEL_VERSION}/.config
+    pushd linux-${LINUX_KERNEL_VERSION}
+    make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$INSTALL_PATH/$TARGET headers_install
+    popd
+else
+    echo "Unhandled target $DEBOOTSTRAP_TARGET"
+    exit 1
+fi
 
-apt-get source linux-source-${LINUX_KERNEL_MINOR_VERSION}
-
-cp -vf /home/crossbuilder/target/.config linux-${LINUX_KERNEL_VERSION}/.config
-
-pushd linux-${LINUX_KERNEL_VERSION}
-make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$INSTALL_PATH/$TARGET headers_install
-popd
 
 cd ..
 
