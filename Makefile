@@ -1,6 +1,5 @@
 
 TARGET_NAME=ARMHF-BULLSEYE
-BASE_IMAGE_REPO=effectiverange/armhf-tools-base
 BASE_IMAGE_VER=latest
 DEVC_ARCH=$(shell grep TARGET_ARCH= TARGET/$(TARGET_NAME)/target | cut -d'=' -f2)
 KEEP_BUILD_ARTIFACTS=FALSE
