@@ -17,7 +17,7 @@ trap 'echo FAILED COMMAND: $previous_command' EXIT
 # See: http://preshing.com/20141119/how-to-build-a-gcc-cross-compiler
 #-------------------------------------------------------------------------------------------
 
-apt install -y bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev software-properties-common zlib1g libz-dev rsync build-essential g++ make gawk python3 sed less
+apt install -y git bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev software-properties-common zlib1g libz-dev rsync build-essential g++ make gawk python3 sed less
 
 mkdir -p /tmp/build
 
