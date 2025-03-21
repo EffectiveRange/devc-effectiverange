@@ -46,8 +46,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME  }}
           password: ${{ secrets.DOCKERHUB_TOKEN  }}
-      
-      - name: Generate Base Image version hash
+      - 
+        name: Generate Base Image version hash
         id: meta
         run: |
           export ER_IMG_TAG="$(./scripts/gen_cross_hash ${{ inputs.arch }}  ./TARGET/${{ inputs.target }})"
@@ -59,7 +59,7 @@ jobs:
       - name: Build and push Docker images
         if: steps.meta.outputs.generate_image == 'true'
         id: dbuild
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true

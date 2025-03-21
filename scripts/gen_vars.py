@@ -222,6 +222,7 @@ GCC_MAJOR_VERSION={gcc_major_ver}
 GLIBC_VERSION={libc_ver}
 LINUX_ARCH={"arm" if kernel_arch.startswith("arm") else kernel_arch_mapping.get(kernel_arch,kernel_arch)}
 LINUX_KERNEL_VERSION={kernel_ver}
+LINUX_KERNEL_MINOR_VERSION={'.'.join(rpi_kernel_ver.split('.')[:2])}
 LINUX_KERNEL_VERSION_URL={kernel_url(kernel_ver)}
 RPI_APT_SOURCES=({' '.join(quoted(r) for r in sorted(pkgRepos))})
 RPI_APT_KEYS=({rpi_apt_archive_key} {rpi_apt_key})

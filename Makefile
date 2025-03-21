@@ -2,13 +2,13 @@
 TARGET_NAME=ARMHF-BULLSEYE
 BASE_IMAGE_REPO=effectiverange/armhf-tools-base
 BASE_IMAGE_VER=latest
-DEVC_ARCH=armhf
+DEVC_ARCH=$(shell grep TARGET_ARCH= TARGET/$(TARGET_NAME)/target | cut -d'=' -f2)
 KEEP_BUILD_ARTIFACTS=FALSE
-CROSS_BASE_IMAGE_VER=bullseye-slim
+BASE_DISTRO=$(shell grep VERSION_CODENAME= TARGET/$(TARGET_NAME)/target | cut -d'=' -f2)
+CROSS_BASE_IMAGE_VER=$(BASE_DISTRO)-slim
 colon := :
 $(colon) := :
 IMG_TAG=$(TARGET_NAME)-$$(date +%Y%m%d-%H%M%S)
-BASE_DISTRO=$(subst -slim,,$(CROSS_BASE_IMAGE_VER))
 
 .PHONY: base-armhf base-amd64 devc devc-armhf devc-amd64 build_driver cross-armhf devc-arm64
 
