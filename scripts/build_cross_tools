@@ -39,9 +39,9 @@ cat "$TMP_FILE"
 export PATH=$INSTALL_PATH/bin:$PATH
 
 
-for step in $( ls -1 "$ROOT_DIR/build_steps_cross_armhf/" | sort -n ) 
+for step in $( ls -1 "$ROOT_DIR/build_steps_cross/" | sort -n ) 
 do
-/bin/bash "$ROOT_DIR/build_steps_cross_armhf/$step" "$@"
+/bin/bash "$ROOT_DIR/build_steps_cross/$step" "$@"
 done
 
 set +e
