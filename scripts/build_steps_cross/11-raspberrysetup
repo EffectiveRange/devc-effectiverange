@@ -23,7 +23,7 @@ if apt policy | grep $REPO_URL ; then
     echo "Repository $REPO_URL already exists"
 else 
     echo "Adding repository $REPO_URL"
-    add-apt-repository  -n -s -y "${repo}"
+    add-apt-repository  -s -y "${repo}"
 fi
 done
 
