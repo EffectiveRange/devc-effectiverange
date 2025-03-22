@@ -13,6 +13,8 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
 done
 
 
+# only add the repository if it does not exist
+# otherwise it will cause package download failures
 for repo in "${RPI_APT_SOURCES[@]}"
 do
 REPO_URL=$(echo "${repo}" | cut -d' ' -f3)
