@@ -8,6 +8,10 @@ STEP_DESCRIPTION="Removing up raspberry repositories"
 source "$(dirname $0)/../build_common"
 
 
+if [ -f /tmp/build/debian.sources ]; then
+mv -vf /tmp/build/debian.sources /etc/apt/sources.list.d/debian.sources 
+fi
+
 # only remove the repository if we added it
 if [ -f /tmp/build/rpi_sources.list ]; then
 for repo in "$(cat /tmp/build/rpi_sources.list)"

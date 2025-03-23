@@ -20,6 +20,10 @@ do
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
 done
 
+if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+mv -vf /etc/apt/sources.list.d/debian.sources /tmp/build/debian.sources
+apt update 
+fi
 
 # only add the repository if it does not exist
 # otherwise it will cause package download failures
@@ -33,13 +37,11 @@ else
     echo "Adding repository $REPO_URL"
     add-apt-repository  -s -y "${repo}"
     echo "${repo}" >> /tmp/build/rpi_sources.list   
-    echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
 fi
 done
 
-if [ -f /etc/apt/sources.list.d/debian.sources ]; then
-sed -ri 's/Types: deb/Types:deb deb-src/g' /etc/apt/sources.list.d/debian.sources
-fi
+
+
 
 
 # setup multiarch by adding current arch to sources list
