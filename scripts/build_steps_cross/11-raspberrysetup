@@ -7,6 +7,10 @@ set -x
 STEP_DESCRIPTION="Setting up raspberry repositories"
 source "$(dirname $0)/../build_common"
 
+
+# create backup of sources.list 
+cp -vf  /etc/apt/sources.list /tmp/build/sources.list
+
 for key in ${RPI_APT_KEYS[@]}
 do
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
@@ -24,8 +28,12 @@ if apt policy | grep $REPO_URL ; then
 else 
     echo "Adding repository $REPO_URL"
     add-apt-repository  -s -y "${repo}"
+    echo "${repo}" >> /tmp/build/rpi_sources.list
+    echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
 fi
 done
+
+
 
 # setup multiarch by adding current arch to sources list
 # sed -ri "s/^deb (\w+)/deb [arch=$(dpkg --print-architecture)] \1/g" /etc/apt/sources.list

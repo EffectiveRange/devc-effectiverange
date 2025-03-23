@@ -9,9 +9,14 @@ source "$(dirname $0)/../build_common"
 
 
 # only remove the repository if we added it
+if [ -f /tmp/build/rpi_sources.list ]; then
 for repo in "$(cat /tmp/build/rpi_sources.list)"
 do
 add-apt-repository -r -y "${repo}"
 done
+fi
+
+# restore sources.list
+cp -vf /tmp/build/sources.list /etc/apt/sources.list
 
 apt update
