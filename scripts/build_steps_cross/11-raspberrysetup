@@ -37,6 +37,9 @@ fi
 echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
 done
 
+if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+sed -ri 's/Types: deb/Types:deb deb-src/g' /etc/apt/sources.list.d/debian.sources
+fi
 
 
 # setup multiarch by adding current arch to sources list
