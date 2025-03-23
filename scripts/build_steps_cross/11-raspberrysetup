@@ -32,9 +32,9 @@ if apt policy | grep $REPO_URL ; then
 else 
     echo "Adding repository $REPO_URL"
     add-apt-repository  -s -y "${repo}"
-    echo "${repo}" >> /tmp/build/rpi_sources.list
+    echo "${repo}" >> /tmp/build/rpi_sources.list   
+    echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
 fi
-echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
 done
 
 if [ -f /etc/apt/sources.list.d/debian.sources ]; then
