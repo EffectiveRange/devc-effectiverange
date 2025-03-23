@@ -9,7 +9,11 @@ source "$(dirname $0)/../build_common"
 
 
 # create backup of sources.list 
-cp -vf  /etc/apt/sources.list /tmp/build/sources.list
+if [ -f /etc/apt/sources.list ]; then
+    cp -vf /etc/apt/sources.list /tmp/build/sources.list
+else
+    touch /tmp/build/sources.list
+fi
 
 for key in ${RPI_APT_KEYS[@]}
 do
