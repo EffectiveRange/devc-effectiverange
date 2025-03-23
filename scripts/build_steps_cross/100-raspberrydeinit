@@ -8,8 +8,8 @@ STEP_DESCRIPTION="Removing up raspberry repositories"
 source "$(dirname $0)/../build_common"
 
 
-
-for repo in "${RPI_APT_SOURCES[@]}"
+# only remove the repository if we added it
+for repo in "$(cat /tmp/build/rpi_sources.list)"
 do
 add-apt-repository -r -y "${repo}"
 done
