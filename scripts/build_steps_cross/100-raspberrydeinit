@@ -12,14 +12,6 @@ if [ -f /tmp/build/debian.sources ]; then
 mv -vf /tmp/build/debian.sources /etc/apt/sources.list.d/debian.sources 
 fi
 
-# only remove the repository if we added it
-if [ -f /tmp/build/rpi_sources.list ]; then
-for repo in "$(cat /tmp/build/rpi_sources.list)"
-do
-add-apt-repository -r -y "${repo}"
-done
-fi
-
 # restore sources.list
 cp -vf /tmp/build/sources.list /etc/apt/sources.list
 

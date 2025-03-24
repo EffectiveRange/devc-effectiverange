@@ -25,22 +25,26 @@ mv -vf /etc/apt/sources.list.d/debian.sources /tmp/build/debian.sources
 apt update 
 fi
 
+
+rm -vf /etc/apt/sources.list
+
 # only add the repository if it does not exist
 # otherwise it will cause package download failures
 for repo in "${RPI_APT_SOURCES[@]}"
 do
 REPO_URL=$(echo "${repo}" | cut -d' ' -f3)
 REPO_URL=${REPO_URL%/}
-if apt policy | grep $REPO_URL ; then
-    echo "Repository $REPO_URL already exists"
-else 
-    echo "Adding repository $REPO_URL"
-    add-apt-repository  -s -y "${repo}"
-    echo "${repo}" >> /tmp/build/rpi_sources.list   
-fi
+echo "Adding repository $REPO_URL"
+echo "${repo}" >> /etc/apt/sources.list
+echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
 done
 
-
+# Add high priority
+cat << EOF >> /etc/apt/preferences.d/rpi
+Package: *
+Pin: release o=Raspberry Pi Foundation
+Pin-Priority: 1001
+EOF
 
 
 
