@@ -17,7 +17,7 @@ apt install -y --no-install-recommends ninja-build git debhelper devscripts equi
 apt install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-stdeb python3-venv python3-virtualenv dh-virtualenv dh-python python3-all
 
 # Install library dev packages
-apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev
+apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev libnm-dev
 
 # Bootstrap pipx with pipx
 python3 -m venv /tmp/bootstrap_pipx

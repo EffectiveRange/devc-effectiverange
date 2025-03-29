@@ -27,9 +27,8 @@ chroot /var/chroot/buildroot /tmp/bootstrap_pipx/bin/pip install  pipx
 chroot /var/chroot/buildroot /usr/bin/env PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin /tmp/bootstrap_pipx/bin/pipx install --global pipx
 chroot /var/chroot/buildroot rm -rf /tmp/bootstrap_pipx
 
-
 # Install library dev packages
-chroot /var/chroot/buildroot apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev
+chroot /var/chroot/buildroot apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev libnm-dev
 
 # Install python build packages
 chroot /var/chroot/buildroot pipx install --global ninja
