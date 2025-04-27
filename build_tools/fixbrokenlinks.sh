@@ -9,7 +9,7 @@ if [ ! -d "$BUILD_ROOT" ]; then
 fi
 
 
-BROKEN_LINKS=$(find $BUILD_ROOT -xtype l -name *.so)
+BROKEN_LINKS=$(find $BUILD_ROOT -xtype l -name *.so*)
 
 for LINK in $BROKEN_LINKS; do
     TARGET=$(readlink $LINK)
