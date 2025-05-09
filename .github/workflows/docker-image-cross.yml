@@ -59,7 +59,7 @@ jobs:
       - name: Build and push Docker images
         if: steps.meta.outputs.generate_image == 'true'
         id: dbuild
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.16.0
         with:
           context: .
           push: true
