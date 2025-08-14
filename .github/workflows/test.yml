@@ -14,7 +14,7 @@ jobs:
     strategy:
         matrix:
           architecture: ["armhf", "amd64", "arm64"]
-          distro: ["bullseye", "bookworm"]
+          distro: ["bookworm"]
     
     steps:
       - name: Check out the repo
