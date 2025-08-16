@@ -4,8 +4,6 @@
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
 
-import sys
-import unittest
 
 import traceback_with_variables
 import filelock
@@ -39,6 +37,10 @@ def pushd(new_dir):
 
 
 depRe = re.compile(r"(?P<name>[^:]+)(?::(?P<arch>\w+))?(?:=(?P<ver>[\w\.\+-]+))?")
+
+
+def manifest_path(side: str):
+    return f"/var/local/{side}-dpkgdeps-manifest.json"
 
 
 def get_os_release():
@@ -179,42 +181,76 @@ def hostroot_cmd(args):
 
 
 def run_with_lock(
-    target_arch: str,
-    callable: Callable[[str], None],
-    /,
-    *args,
+    target_arch: str, callable: Callable[[str], None], /, *args, **kwargs
 ):
     lock = filelock.FileLock("/tmp/dpkgdeps.lock")
     with lock:
+        if "condition" in kwargs and not kwargs["condition"]():
+            return
         callable(target_arch, *args)
+        if "post" in kwargs:
+            kwargs["post"]()
 
 
-def run_in_buildroot_with_lock(target_arch: str, /, *args):
-    run_with_lock(target_arch, run_in_buildroot, *args)
+def run_in_buildroot_with_lock(target_arch: str, /, *args, **kwargs):
+    run_with_lock(target_arch, run_in_buildroot, *args, **kwargs)
 
 
-def run_in_hostroot_with_lock(target_arch: str, /, *args):
-    run_with_lock(target_arch, run_in_hostroot, *args)
+def run_in_hostroot_with_lock(target_arch: str, /, *args, **kwargs):
+    run_with_lock(target_arch, run_in_hostroot, *args, **kwargs)
 
 
-def install_in_root(arch: str, runner, allDeps):
+def check_install_manifest(pkgs: list[str], *, side: str):
+    def _checker():
+        manifest_file = manifest_path(side)
+        if not os.path.exists(manifest_file):
+            return True
+        with open(manifest_file) as f:
+            manifest: list[str] = json.load(f)
+        get_logger().info("Read install manifest from %s", manifest_file)
+        assert isinstance(manifest, list), "Invalid manifest format"
+        manifest_set = set(manifest)
+        expected_manifest = set(pkgs)
+        get_logger().debug("mset = %s", manifest_set)
+        get_logger().debug("expected = %s", expected_manifest)
+        return len(expected_manifest.difference(manifest_set)) != 0
+
+    return _checker
+
+
+def persist_install_manifest(pkgs: list[str], *, side: str):
+    def _persistor():
+        manifest_file = manifest_path(side)
+        with open(manifest_file, "r") as f:
+            manifest: list[str] = json.load(f)
+        with open(manifest_file, "w") as f:
+            manifest.extend(pkgs)
+            json.dump(list(set(manifest)), f)
+        get_logger().info("Persisted install manifest to %s", manifest_file)
+
+    return _persistor
+
+
+def install_in_root(arch: str, runner, allDeps, **kwargs):
     pkgs = [d.specStr() for d in allDeps]
-    runner(arch, "apt", "update")
+    runner(arch, "apt", "update", condition=check_install_manifest(pkgs, **kwargs))
     runner(
         arch,
         "apt",
         "install",
         "-y",
         *pkgs,
+        condition=check_install_manifest(pkgs, **kwargs),
+        post=persist_install_manifest(pkgs, **kwargs),
     )
 
 
 def install_in_buildroot(args, allDeps):
-    install_in_root(args.arch, run_in_buildroot_with_lock, allDeps)
+    install_in_root(args.arch, run_in_buildroot_with_lock, allDeps, side="build")
 
 
 def install_in_hostroot(args, allDeps):
-    install_in_root(build_arch, run_in_hostroot_with_lock, allDeps)
+    install_in_root(build_arch, run_in_hostroot_with_lock, allDeps, side="host")
 
 
 def main():
