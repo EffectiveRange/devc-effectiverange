@@ -16,19 +16,19 @@ chroot /var/chroot/buildroot apt install -y --no-install-recommends -o Dpkg::Opt
 # compiling cmake from source is possible, but takes 30 minutes, in case there's an error about this
 # then this compilation will need to take place as part of the devc build
 # Install base packages
-chroot /var/chroot/buildroot apt install -y --no-install-recommends cmake ninja-build git debhelper devscripts equivs dbus
+chroot /var/chroot/buildroot apt install -y --no-install-recommends cmake ninja-build git debhelper devscripts equivs
 
 # Install packages for python development
-chroot /var/chroot/buildroot apt install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-stdeb python3-venv  python3-virtualenv dh-virtualenv dh-python python3-all python-apt-dev python3-apt
+chroot /var/chroot/buildroot apt install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-venv python3-virtualenv python3-all
+
+# Install python build tool packages
+chroot /var/chroot/buildroot apt install -y --no-install-recommends python3-stdeb python3-setuptools python3-setuptools-scm dh-virtualenv dh-python
 
 # Bootstrap pipx with pipx
 chroot /var/chroot/buildroot python3 -m venv /tmp/bootstrap_pipx
 chroot /var/chroot/buildroot /tmp/bootstrap_pipx/bin/pip install  pipx
 chroot /var/chroot/buildroot /usr/bin/env PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin /tmp/bootstrap_pipx/bin/pipx install --global pipx
 chroot /var/chroot/buildroot rm -rf /tmp/bootstrap_pipx
-
-# Install library dev packages
-chroot /var/chroot/buildroot apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev libnm-dev
 
 # Install python build packages
 chroot /var/chroot/buildroot pipx install --global ninja
