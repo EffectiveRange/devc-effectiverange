@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
+
 set -x
 STEP_DESCRIPTION="Install build utils into schroot"
 source "$(dirname $0)/../build_common"
@@ -11,13 +12,13 @@ source "$(dirname $0)/../build_common"
 # Fix blocking netbase install
 apt install -y --no-install-recommends -o Dpkg::Options::="--force-confnew" netbase
 
-apt install -y --no-install-recommends ninja-build git debhelper devscripts equivs dbus
+apt install -y --no-install-recommends ninja-build git debhelper devscripts equivs
 
 # Install packages for python development
-apt install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-stdeb python3-venv python3-virtualenv dh-virtualenv dh-python python3-all python-apt-dev python3-apt
+apt install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-venv python3-virtualenv python3-all
 
-# Install library dev packages
-apt install -y --no-install-recommends libsystemd-dev libdbus-glib-1-dev libgirepository1.0-dev libcairo2-dev libnm-dev
+# Install python build tool packages
+apt install -y --no-install-recommends python3-stdeb python3-setuptools python3-setuptools-scm dh-virtualenv dh-python
 
 # Bootstrap pipx with pipx
 python3 -m venv /tmp/bootstrap_pipx
