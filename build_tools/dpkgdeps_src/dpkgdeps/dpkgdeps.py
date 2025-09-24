@@ -221,8 +221,10 @@ def check_install_manifest(pkgs: list[str], *, side: str):
 def persist_install_manifest(pkgs: list[str], *, side: str):
     def _persistor():
         manifest_file = manifest_path(side)
-        with open(manifest_file, "r") as f:
-            manifest: list[str] = json.load(f)
+        manifest: list[str] = []
+        if os.path.exists(manifest_file):
+            with open(manifest_file, "r") as f:
+                manifest: list[str] = json.load(f)
         with open(manifest_file, "w") as f:
             manifest.extend(pkgs)
             json.dump(list(set(manifest)), f)
