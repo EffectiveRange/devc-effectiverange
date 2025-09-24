@@ -222,13 +222,18 @@ def persist_install_manifest(pkgs: list[str], *, side: str):
     def _persistor():
         manifest_file = manifest_path(side)
         manifest: list[str] = []
-        if os.path.exists(manifest_file):
-            with open(manifest_file, "r") as f:
-                manifest: list[str] = json.load(f)
-        with open(manifest_file, "w") as f:
-            manifest.extend(pkgs)
-            json.dump(list(set(manifest)), f)
-        get_logger().info("Persisted install manifest to %s", manifest_file)
+        try:
+            if os.path.exists(manifest_file):
+                with open(manifest_file, "r") as f:
+                    manifest: list[str] = json.load(f)
+            with open(manifest_file, "w") as f:
+                manifest.extend(pkgs)
+                json.dump(list(set(manifest)), f)
+            get_logger().info("Persisted install manifest to %s", manifest_file)
+        except PermissionError as error:
+            get_logger().error("Cannot persist install manifest to %s: %s", manifest_file, error)
+        except json.JSONDecodeError as error:
+            get_logger().error("Cannot parse existing manifest file %s: %s", manifest_file, error)
 
     return _persistor
 
