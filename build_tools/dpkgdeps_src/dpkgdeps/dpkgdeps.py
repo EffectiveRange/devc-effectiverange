@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 
+import tempfile
 import traceback_with_variables
 import filelock
 import argparse
@@ -226,14 +227,20 @@ def persist_install_manifest(pkgs: list[str], *, side: str):
             if os.path.exists(manifest_file):
                 with open(manifest_file, "r") as f:
                     manifest: list[str] = json.load(f)
-            with open(manifest_file, "w") as f:
-                manifest.extend(pkgs)
-                json.dump(list(set(manifest)), f)
+            with tempfile.NamedTemporaryFile(delete=True) as tempf:
+                with open(tempf.name, "w") as f:
+                    manifest.extend(pkgs)
+                    json.dump(list(set(manifest)), f)
+                hostroot_cmd(["cp", "-vf", tempf.name, manifest_file])
             get_logger().info("Persisted install manifest to %s", manifest_file)
         except PermissionError as error:
-            get_logger().error("Cannot persist install manifest to %s: %s", manifest_file, error)
+            get_logger().error(
+                "Cannot persist install manifest to %s: %s", manifest_file, error
+            )
         except json.JSONDecodeError as error:
-            get_logger().error("Cannot parse existing manifest file %s: %s", manifest_file, error)
+            get_logger().error(
+                "Cannot parse existing manifest file %s: %s", manifest_file, error
+            )
 
     return _persistor
 
