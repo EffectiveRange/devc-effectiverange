@@ -12,8 +12,9 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "test/build_exe_test/deps.json"
-            ]
+                "--targetdir=${workspaceFolder}/TARGET/AMD64-BOOKWORM"
+            ],
+            "envFile": "${workspaceFolder}/TARGET/AMD64-BOOKWORM/target"
         },
         {
             "name": "Python: Test Current File",

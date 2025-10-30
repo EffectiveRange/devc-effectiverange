@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 set -x
-STEP_DESCRIPTION="Install build utils into schroot"
+STEP_DESCRIPTION="Install build utils into host root"
 source "$(dirname $0)/../build_common"
 
 # Install necessary packages

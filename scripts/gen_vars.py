@@ -157,6 +157,8 @@ class APTPkgInfo:
 def rpi_source_to_apt(envkey: str):
     src = os.environ.get(f"{envkey}_SOURCE", "").strip()
     pkgver = os.environ.get(f"{envkey}_VER", "").strip()
+    if not src or not pkgver:
+        return None
     url, spec, arch = src.split()[0:3]
     ver, branch = spec.split("/")[0:2]
     return APTPkgInfo(envkey, arch, f"deb [arch={arch}] {url} {ver} {branch}", pkgver)
@@ -190,7 +192,9 @@ rpi_kernel_vers = (
     os.environ.get("RPI_KERNEL_VER_LIST", "").strip().strip(",").split(",")
 )
 
-pkgInfos = [rpi_source_to_apt(key) for key in ("RPI_KERNEL_HEADERS", "LIBC6")]
+pkgInfos = [
+    info for key in ("RPI_KERNEL_HEADERS", "LIBC6") if (info := rpi_source_to_apt(key))
+]
 arches = {i.arch for i in pkgInfos}
 assert len(arches) == 1, "Multiple architecture deteceted"
 rpi_apt_arch = tuple(arches)[0]
