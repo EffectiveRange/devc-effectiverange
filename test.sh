@@ -21,7 +21,7 @@ fi
 
 if [ $BUILD_ARCH == "amd64" ]
 then
-TARGET=ARMHF-${DISTRO^^}
+TARGET=AMD64-${DISTRO^^}
 elif [ $BUILD_ARCH == "arm64" ]
 then
 TARGET=AARCH64-${DISTRO^^}
