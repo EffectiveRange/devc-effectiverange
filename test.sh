@@ -49,9 +49,7 @@ IMG_ID=$(uuidgen)
 
 make -C "$ROOT_DIR" base-$BUILD_ARCH TARGET_NAME=$TARGET IMG_TAG=$IMG_ID
 
-make -C "$ROOT_DIR" devc-$BUILD_ARCH TARGET_NAME=$TARGET IMG_TAG=$IMG_ID BASE_IMAGE_VER=$IMG_ID
-
-make -C "$ROOT_DIR/test" clean test BASE_IMAGE_REPO=effectiverange/er-devc-$BUILD_ARCH-$DISTRO   BASE_IMAGE_VER=$IMG_ID 
+make -C "$ROOT_DIR/test" clean test BASE_IMAGE_REPO=effectiverange/$BUILD_ARCH-$DISTRO-tools-base  BASE_IMAGE_VER=$IMG_ID 
 
 
 
