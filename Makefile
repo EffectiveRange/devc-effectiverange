@@ -9,7 +9,7 @@ colon := :
 $(colon) := :
 IMG_TAG=$(TARGET_NAME)-$$(date +%Y%m%d-%H%M%S)
 
-.PHONY: base-armhf base-amd64 devc devc-armhf devc-amd64 build_driver cross-armhf devc-arm64
+.PHONY: base-armhf base-amd64 build_driver cross-armhf base-arm64 base-armhf
 
 build_driver:
 	if [ $$(id -u) -eq "0" ] ; then apt update && apt install -y  qemu-user-static qemu-utils binfmt-support;\
@@ -30,14 +30,4 @@ base-amd64:
 
 base-arm64: cross-armhf
 	docker buildx build . --file Dockerfile --tag effectiverange/arm64-$(BASE_DISTRO)-tools-base$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/arm64-$(BASE_DISTRO)-tools-cross --build-arg BASE_IMAGE_VER=$$(./scripts/gen_cross_hash armhf TARGET/$(TARGET_NAME)) --build-arg TARGET_DIR=TARGET/$(TARGET_NAME) --build-arg KEEP_BUILD_ARTIFACTS=$(KEEP_BUILD_ARTIFACTS) --build-arg BUILD_ARCH=arm64
-
-
-devc-armhf:
-	docker buildx build --file Dockerfile-devc --tag effectiverange/er-devc-armhf-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/armhf-$(BASE_DISTRO)-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=armhf .
-
-devc-amd64:
-	docker buildx build --file Dockerfile-devc --tag  effectiverange/er-devc-amd64-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/amd64-$(BASE_DISTRO)-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=amd64 .
-
-devc-arm64:
-	docker build --file Dockerfile-devc --tag  effectiverange/er-devc-arm64-$(BASE_DISTRO)$(:)$(IMG_TAG) --build-arg BASE_IMAGE_REPO=effectiverange/arm64-$(BASE_DISTRO)-tools-base --build-arg BASE_IMAGE_VER=$(BASE_IMAGE_VER) --build-arg DEVC_ARCH=arm64 .
 

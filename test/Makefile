@@ -1,4 +1,4 @@
-BASE_IMAGE_REPO=effectiverange/er-devc-armhf
+BASE_IMAGE_REPO=effectiverange/armhf-bookworm-tools-base
 BASE_IMAGE_VER=latest
 colon := :
 $(colon) := :

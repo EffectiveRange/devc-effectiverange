@@ -74,41 +74,4 @@ jobs:
       imageid: ${{ steps.dbuild.outputs.imageid }}
       imagever: ${{ steps.meta.outputs.version }}
 
-  build_devc_image:
-    needs: build_base_image 
-    name: Build and push devc image
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: qemu-user qemu-user-static qemu-utils binfmt-support    
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME  }}
-          password: ${{ secrets.DOCKERHUB_TOKEN  }}
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            effectiverange/er-devc-${{ inputs.arch }}-${{ inputs.distro }}
-          flavor: |
-            latest=true
-      - name: Build and push devc Docker images
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          file: "Dockerfile-devc"
-          build-args: |
-            BASE_IMAGE_REPO=effectiverange/${{ inputs.arch }}-${{ inputs.distro }}-tools-base
-            BASE_IMAGE_VER=${{ needs.build_base_image.outputs.imagever }}
-            DEVC_ARCH=${{ inputs.arch }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
         
