@@ -59,7 +59,7 @@ jobs:
     secrets: inherit
     with:
       arch: "amd64"
-      target: "ARMHF-BOOKWORM"
+      target: "AMD64-BOOKWORM"
       base_ver: "bookworm-slim"
       distro: "bookworm"
     
@@ -75,6 +75,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.REPO_PROPAGATE_APP_ID }}
+          private-key: ${{ secrets.REPO_PROPAGATE_KEY }}
+          repositories: devc-effectiverange-baseoverlay
+      - name: Dispatch repository event
+        env:
+          TOKEN: ${{ steps.app-token.outputs.token }}
+          ORG: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
+          DOWNSTREAM_REPO: devc-effectiverange-baseoverlay
+          VERSION: ${{ github.ref_name }}   
+        run: |
+          set -euo pipefail
+          payload=$(jq -n \
+            --arg et "${REPO}" \
+            --arg ver "${VERSION}" \
+            '{event_type: $et, client_payload: { version: $ver }}')
+          curl -fSsL \
+            -X POST \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${ORG}/${DOWNSTREAM_REPO}/dispatches" \
+            -d "${payload}"
+
 
 
