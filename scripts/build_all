@@ -24,8 +24,6 @@ apt-get update && apt-get upgrade -y
 
 apt-get install -y --no-install-recommends $PACKAGES_TO_INSTALL
 
-# Install fpm packaging tools
-gem install --no-document fpm
 
 # Install latest clang tooling
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
@@ -51,16 +49,29 @@ ln -sfv /usr/bin/clang-format-diff-$LLVM_VERSION /usr/bin/clang-format-diff
 wget -O - https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh > /tmp/cmake_install.sh
 /bin/bash /tmp/cmake_install.sh --skip-license  --prefix=/usr
 
-# Installing latest packaging tools
-mkdir -p /opt
-cd /opt
-git clone --depth=1 -b latest  https://github.com/EffectiveRange/packaging-tools
-for packscript in $(find /opt/packaging-tools/ -name pack_\*)
-do
-packname=$(basename "$packscript")
-ln -svf "$packscript" "/usr/local/bin/$packname"
-done
+mkdir -p /tmp/fake-cmake
 
+cd /tmp/fake-cmake
+
+cat << EOF > /tmp/fake-cmake/fake-cmake
+Section: misc
+Priority: optional
+Standards-Version: 4.6.0
+
+Package: fake-cmake
+Version: 100:1.0
+Provides: cmake
+Conflicts: cmake
+Replaces: cmake
+Description: Dummy package to satisfy cmake dependency (custom cmake installed from source)
+ This package does not contain cmake; it only exists so that apt
+ considers the cmake dependency satisfied. Real cmake is installed
+ under /usr/local from source.
+EOF
+
+equivs-build fake-cmake
+
+dpkg -i fake-cmake_*.deb
 
 mkdir -p /tmp/build
 
