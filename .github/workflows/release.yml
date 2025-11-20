@@ -73,7 +73,7 @@ jobs:
     needs: [call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bookworm]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Release
         uses: softprops/action-gh-release@v2
       - uses: actions/create-github-app-token@v2
