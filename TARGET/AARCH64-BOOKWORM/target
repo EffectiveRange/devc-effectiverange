@@ -25,4 +25,4 @@ LD_COMPRESSED_DEBUGINFO=''
 BINUTILS_GOLD_LINKER=
 BINUTILS_GOLD_LINKER='yes'
 LD_DEFAULT_GOLD=''
-RPI_KERNEL_VER_LIST='linux-headers-6.12.25+rpt-rpi-2712,linux-headers-6.12.25+rpt-rpi-v8,linux-headers-6.12.34+rpt-rpi-2712,linux-headers-6.12.34+rpt-rpi-v8,'
+RPI_KERNEL_VER_LIST='linux-headers-6.12.25+rpt-rpi-2712,linux-headers-6.12.25+rpt-rpi-v8,linux-headers-6.12.34+rpt-rpi-2712,linux-headers-6.12.34+rpt-rpi-v8,linux-headers-6.12.47+rpt-rpi-2712,linux-headers-6.12.47+rpt-rpi-v8'
