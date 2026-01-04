@@ -24,8 +24,8 @@ then
 elif [ $DEBOOTSTRAP_TARGET == "bookworm" ]
 then
     apt-get source linux-source-${LINUX_KERNEL_MINOR_VERSION}
-    cp -vf /home/crossbuilder/target/.config linux-${LINUX_KERNEL_VERSION}/.config
-    pushd linux-${LINUX_KERNEL_VERSION}
+    cp -vf -t linux-${LINUX_KERNEL_MINOR_VERSION}* /home/crossbuilder/target/.config 
+    pushd linux-${LINUX_KERNEL_MINOR_VERSION}*
     make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$INSTALL_PATH/$TARGET headers_install
     popd
 else
