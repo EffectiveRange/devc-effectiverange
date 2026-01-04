@@ -60,7 +60,7 @@ apt_output_re = re.compile(r"(?P<version>(?:\d+\.?)+)(?:-[\w+]+)")
 
 
 def get_version_from_apt_info(env_var: str):
-    var = os.environ.get(env_var, "")
+    var = os.environ.get(env_var, "").strip()
     m = apt_output_re.match(var.split()[1])
     if m:
         return m.groupdict()["version"]
@@ -171,17 +171,17 @@ def get_apt_sources(s: str, arch: str):
     )
 
 
-rpi_kernel_ver = os.environ.get("KERNEL_VER") or ""
-kernel_ver = rpi_kernel_ver.split("+")[0].split("-")[0]
-target = os.environ.get("GCC_MACHINE")
+rpi_kernel_ver = os.environ.get("KERNEL_VER", "").strip()
+kernel_ver = rpi_kernel_ver.split("+")[0].split("-")[0].strip()
+target = os.environ.get("GCC_MACHINE", "").strip()
 
 binutils_ver = get_version_from_apt_info("BINUTILS_INFO")
-gcc_ver = remove_patch_ver(os.environ.get("GCC_VER", ""), "0")
+gcc_ver = remove_patch_ver(os.environ.get("GCC_VER", "").strip(), "0")
 gcc_major_ver = gcc_ver.split(".")[0]
 libc_ver = get_version_from_apt_info("LIBC_INFO")
-kernel_arch = os.environ.get("MARCH", "")
-gcc_conf = os.environ.get("GCC_CONFIG", "")
-glibc_make_flags = os.environ.get("GLIBC_MAKE_FLAGS", "")
+kernel_arch = os.environ.get("MARCH", "").strip()
+gcc_conf = os.environ.get("GCC_CONFIG", "").strip()
+glibc_make_flags = os.environ.get("GLIBC_MAKE_FLAGS", "").strip()
 gcc_opts = add_extra_gcc_options(sanitize_gcc_options(gcc_conf))
 gold_linker = os.environ.get("BINUTILS_GOLD_LINKER", "").strip()
 compressed_debuginfo = os.environ.get("LD_COMPRESSED_DEBUGINFO", "").strip()
