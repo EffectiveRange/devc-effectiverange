@@ -41,6 +41,12 @@ export PATH=$INSTALL_PATH/bin:$PATH
 
 for step in $( ls -1 "$ROOT_DIR/build_steps_cross/" | sort -n ) 
 do
+current_step_idx=$(echo $step | cut -d- -f1)
+if [ -n "$EARLY_EXIT_STEP" ] && [ "$current_step_idx" -ge "$EARLY_EXIT_STEP" ]
+then
+    echo "Early exit requested at step $EARLY_EXIT_STEP. Stopping before step $current_step_idx."
+    break
+fi
 /bin/bash "$ROOT_DIR/build_steps_cross/$step" "$@"
 done
 
