@@ -21,7 +21,7 @@ then
     pushd rpi-linux
     make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$INSTALL_PATH/$TARGET headers_install
     popd
-elif [ $DEBOOTSTRAP_TARGET == "bookworm" ]
+elif [ $DEBOOTSTRAP_TARGET == "bookworm" -o $DEBOOTSTRAP_TARGET == "trixie" ]
 then
     apt-get source linux-source-${LINUX_KERNEL_MINOR_VERSION}
     cp -vf -t linux-${LINUX_KERNEL_MINOR_VERSION}* /home/crossbuilder/target/.config 
@@ -39,7 +39,7 @@ cd ..
 echo "Downloading rpi libc source with patches"
 
 # this creates the glibc directory, as it unpacks the archive
-apt-get source libc6:${RPI_APT_ARCH}
+apt-get source libc6
 
 CURRENT_GLIBC_VER="$(ls -1r glibc*.tar.xz | tail -1 )"
 
