@@ -11,8 +11,6 @@ set -o pipefail
 mkdir -p /var/chroot/
 mkdir -p /usr/share/keyrings
 rm -rf /var/chroot/buildroot
-wget -qO -  ${DEBOOTSTRAP_SOURCE}/raspbian.public.key  | gpg --import -
-wget -qO- ${DEBOOTSTRAP_SOURCE}/raspbian.public.key \
-  | gpg --dearmor -o /usr/share/keyrings/raspbian-archive-keyring.gpg
+wget -qO- ${DEBOOTSTRAP_SOURCE}/raspbian.public.key | gpg --dearmor -o /usr/share/keyrings/raspbian-archive-keyring.gpg
 debootstrap --arch=${RPI_APT_ARCH} --keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg --verbose --foreign --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot ${DEBOOTSTRAP_SOURCE}/raspbian/
 chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage
