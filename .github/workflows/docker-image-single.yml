@@ -34,7 +34,7 @@ on:
 jobs:
   build_base_image:
     name: Push Docker base image to dockerhub
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
