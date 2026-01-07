@@ -16,20 +16,24 @@ echo "nameserver 8.8.8.8" >> /var/chroot/buildroot/etc/resolv.conf
 chroot  /var/chroot/buildroot apt update
 chroot  /var/chroot/buildroot apt install -y gnupg build-essential pkg-config nano wget python3 python3-pip python3-dev 
 
-# Add apt keys for RPI sources
-chroot /var/chroot/buildroot apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E
+# Add raspberry pi sources
+cat << EOF > /var/chroot/buildroot/etc/apt/sources.list.d/raspi.sources
+Types: deb deb-src
+URIs: http://archive.raspberrypi.com/debian/
+Suites: ${DEBOOTSTRAP_TARGET}
+Components: main
+Architectures: ${RPI_APT_ARCH}
+Signed-By: /usr/share/keyrings/raspberrypi-archive-keyring.pgp
+EOF
 
-touch /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
-for repo in "${TARGET_APT_SOURCES[@]}"
-do
-echo "${repo}" >> /var/chroot/buildroot/etc/apt/sources.list.d/raspi.list
-done
+curl -fsSL http://archive.raspberrypi.com/debian/raspberrypi.gpg.key |  tee /var/chroot/buildroot/usr/share/keyrings/raspberrypi-archive-keyring.pgp > /dev/null
+
 
 chroot  /var/chroot/buildroot apt update
 if [ $DEBOOTSTRAP_TARGET == "bullseye" ]
 then
     chroot  /var/chroot/buildroot apt install --no-install-recommends -y raspberrypi-kernel-headers 
-elif [ $DEBOOTSTRAP_TARGET == "bookworm" ]
+elif [ $DEBOOTSTRAP_TARGET == "bookworm" -o $DEBOOTSTRAP_TARGET == "trixie" ]
 then
     for khdrpkg in "${RPI_KERNEL_HDR_VERSIONS[@]}"
     do

@@ -8,11 +8,7 @@ STEP_DESCRIPTION="Removing up raspberry repositories"
 source "$(dirname $0)/../build_common"
 
 
-if [ -f /tmp/build/debian.sources ]; then
-mv -vf /tmp/build/debian.sources /etc/apt/sources.list.d/debian.sources 
-fi
-
-# restore sources.list
-cp -vf /tmp/build/sources.list /etc/apt/sources.list
+rm -vf /etc/apt/sources.list.d/raspi.sources
+rm -vf /etc/apt/preferences.d/rpi
 
 apt update

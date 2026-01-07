@@ -7,40 +7,21 @@ set -x
 STEP_DESCRIPTION="Setting up raspberry repositories"
 source "$(dirname $0)/../build_common"
 
-
-# create backup of sources.list 
-if [ -f /etc/apt/sources.list ]; then
-    cp -vf /etc/apt/sources.list /tmp/build/sources.list
-else
-    touch /tmp/build/sources.list
-fi
-
-for key in ${RPI_APT_KEYS[@]}
-do
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${key}
-done
-
-if [ -f /etc/apt/sources.list.d/debian.sources ]; then
-mv -vf /etc/apt/sources.list.d/debian.sources /tmp/build/debian.sources
-apt update 
-fi
+# Add raspberry pi sources
+cat << EOF > /etc/apt/sources.list.d/raspi.sources
+Types: deb-src
+URIs: http://archive.raspberrypi.com/debian/
+Suites: ${DEBOOTSTRAP_TARGET}
+Components: main
+Architectures: ${RPI_APT_ARCH}
+Signed-By: /usr/share/keyrings/raspberrypi-archive-keyring.pgp
+EOF
 
 
-rm -vf /etc/apt/sources.list
-
-# only add the repository if it does not exist
-# otherwise it will cause package download failures
-for repo in "${RPI_APT_SOURCES[@]}"
-do
-REPO_URL=$(echo "${repo}" | cut -d' ' -f3)
-REPO_URL=${REPO_URL%/}
-echo "Adding repository $REPO_URL"
-echo "${repo}" >> /etc/apt/sources.list
-echo "${repo}" | sed -r 's/^deb /deb-src /g' >> /etc/apt/sources.list
-done
+curl -fsSL https://archive.raspberrypi.com/debian/raspberrypi.gpg.key |  tee /usr/share/keyrings/raspberrypi-archive-keyring.pgp > /dev/null
 
 # Add high priority
-cat << EOF >> /etc/apt/preferences.d/rpi
+cat << EOF > /etc/apt/preferences.d/rpi
 Package: *
 Pin: release o=Raspberry Pi Foundation
 Pin-Priority: 1001

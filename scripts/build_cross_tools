@@ -19,7 +19,7 @@ trap 'echo FAILED COMMAND: $previous_command' EXIT
 
 apt update
 
-apt install -y git bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev zlib1g libz-dev rsync build-essential g++ make gawk python3 sed less
+apt install -y nano curl git bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev zlib1g libz-dev rsync build-essential g++ make gawk python3 sed less
 
 mkdir -p /tmp/build
 

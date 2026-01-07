@@ -26,7 +26,6 @@ apt-get install -y --no-install-recommends $PACKAGES_TO_INSTALL
 
 
 # Install latest clang tooling
-wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh 
 chmod +x /tmp/llvm.sh 
 
