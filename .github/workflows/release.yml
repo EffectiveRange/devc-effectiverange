@@ -64,13 +64,61 @@ jobs:
       distro: "bookworm"
     
 
+  call_build_cross_base-armhf-trixie:
+    uses: ./.github/workflows/docker-image-cross.yml
+    secrets: inherit
+    with:
+      arch: "armhf"
+      target: "ARMHF-TRIXIE"
+      base_ver: "trixie-slim"
+
+  call_build_and_publish_images-armhf-trixie:
+    needs: call_build_cross_base-armhf-trixie
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "armhf"
+      base_repo: "effectiverange/armhf-trixie-tools-cross"
+      base_ver:  ${{needs.call_build_cross_base-armhf-trixie.outputs.imagever}}      
+      target: "ARMHF-TRIXIE"
+      distro: "trixie"
+
+  call_build_cross_base-arm64-trixie:
+    uses: ./.github/workflows/docker-image-cross.yml
+    secrets: inherit
+    with:
+      arch: "arm64"
+      target: "AARCH64-TRIXIE"
+      base_ver: "trixie-slim"
+
+  call_build_and_publish_images-arm64-trixie:
+    needs: call_build_cross_base-arm64-trixie
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "arm64"
+      target: "AARCH64-TRIXIE"
+      base_repo: "effectiverange/arm64-trixie-tools-cross"
+      base_ver:  ${{needs.call_build_cross_base-arm64-trixie.outputs.imagever}}
+      distro: "trixie"
+
+  call_build_and_publish_images-amd64-trixie:
+    uses: ./.github/workflows/docker-image-single.yml
+    secrets: inherit
+    with:
+      arch: "amd64"
+      target: "AMD64-TRIXIE"
+      base_ver: "trixie-slim"
+      distro: "trixie"
+    
+
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
       discussions: write
-    needs: [call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bookworm]
+    needs: [call_build_and_publish_images-armhf-bookworm,call_build_and_publish_images-amd64-bookworm,call_build_and_publish_images-arm64-bookworm,call_build_and_publish_images-armhf-trixie,call_build_and_publish_images-amd64-trixie,call_build_and_publish_images-arm64-trixie]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
