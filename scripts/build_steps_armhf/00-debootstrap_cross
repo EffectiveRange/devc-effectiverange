@@ -1,16 +1,44 @@
 #!/bin/bash
-set -x
 # SPDX-FileCopyrightText: 2024 Ferenc Nandor Janky <ferenj@effective-range.com>
 # SPDX-FileCopyrightText: 2024 Attila Gombos <attila.gombos@effective-range.com>
 # SPDX-License-Identifier: MIT
+set -x
+set -Eeuo pipefail
 
 STEP_DESCRIPTION="Debootstrap buildroot"
-source "$(dirname $0)/../build_common"
+source "$(dirname "$0")/../build_common"
 
-set -o pipefail
-mkdir -p /var/chroot/
-mkdir -p /usr/share/keyrings
-rm -rf /var/chroot/buildroot
-wget -qO- ${DEBOOTSTRAP_SOURCE}/raspbian.public.key | gpg --dearmor -o /usr/share/keyrings/raspbian-archive-keyring.gpg
-debootstrap --arch=${RPI_APT_ARCH} --keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg --verbose --foreign --variant=buildd ${DEBOOTSTRAP_TARGET} /var/chroot/buildroot ${DEBOOTSTRAP_SOURCE}/raspbian/
+apt-get install -y --no-install-recommends   gpgv gnupg ca-certificates wget
+
+mkdir -p /var/chroot/ /usr/share/keyrings /tmp/dbcache
+rm -rf /var/chroot/buildroot /tmp/dbcache
+mkdir -p /tmp/dbcache
+
+# Fetch + dearmor key atomically
+tmp_key="$(mktemp)"
+wget -qO- "${DEBOOTSTRAP_SOURCE}/raspbian.public.key" | gpg --dearmor > "${tmp_key}"
+install -m 0644 "${tmp_key}" /usr/share/keyrings/raspbian-archive-keyring.gpg
+rm -f "${tmp_key}"
+
+# Optional: show key fingerprint in logs (helps debugging key rotations)
+gpg --show-keys --with-fingerprint /usr/share/keyrings/raspbian-archive-keyring.gpg | sed -n '1,20p' || true
+
+# If this ever fails again, dump evidence
+if ! debootstrap \
+    --arch="${RPI_APT_ARCH}" \
+    --cache-dir=/tmp/dbcache \
+    --keyring=/usr/share/keyrings/raspbian-archive-keyring.gpg \
+    --verbose --foreign --variant=buildd \
+    "${DEBOOTSTRAP_TARGET}" /var/chroot/buildroot \
+    "${DEBOOTSTRAP_SOURCE}/raspbian/"
+then
+  env | grep -i proxy || true
+  find /tmp/dbcache -maxdepth 5 -type f -iname 'InRelease' -print -exec head -n 5 {} \; || true
+  if command -v gpgv >/dev/null; then
+    find /tmp/dbcache -maxdepth 5 -type f -iname 'InRelease' -print -exec \
+      gpgv -vv --keyring /usr/share/keyrings/raspbian-archive-keyring.gpg {} \; || true
+  fi
+  exit 1
+fi
+
 chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage
