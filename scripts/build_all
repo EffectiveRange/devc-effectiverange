@@ -24,6 +24,12 @@ apt-get update && apt-get upgrade -y
 
 apt-get install -y --no-install-recommends $PACKAGES_TO_INSTALL
 
+export  $(cat /etc/os-release  | grep VERSION_ID | sed 's/"//g')
+
+if [ "$VERSION_ID" -lt "13" ];
+then
+apt install -y --no-install-recommends lsb-release wget software-properties-common gnupg
+fi
 
 # Install latest clang tooling
 wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh 
