@@ -7,22 +7,22 @@
 STEP_DESCRIPTION="Install build utils into schroot"
 source "$(dirname $0)/../build_common"
 
-chroot /var/chroot/buildroot apt update
+chroot /var/chroot/buildroot apt_update
 
 # Fix blocking netbase install
-chroot /var/chroot/buildroot apt install -y --no-install-recommends -o Dpkg::Options::="--force-confnew" netbase
+chroot /var/chroot/buildroot apt_install -y --no-install-recommends -o Dpkg::Options::="--force-confnew" netbase
 
 # NOTE: this cmake install version will differ from the host cmake version
 # compiling cmake from source is possible, but takes 30 minutes, in case there's an error about this
 # then this compilation will need to take place as part of the devc build
 # Install base packages
-chroot /var/chroot/buildroot apt install -y --no-install-recommends cmake ninja-build git debhelper devscripts equivs
+chroot /var/chroot/buildroot apt_install -y --no-install-recommends cmake ninja-build git debhelper devscripts equivs
 
 # Install packages for python development
-chroot /var/chroot/buildroot apt install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-venv python3-virtualenv python3-all
+chroot /var/chroot/buildroot apt_install -y --no-install-recommends python3 python3-pip python3-dev python3-wheel python3-venv python3-virtualenv python3-all
 
 # Install python build tool packages
-chroot /var/chroot/buildroot apt install -y --no-install-recommends python3-stdeb python3-setuptools python3-setuptools-scm dh-virtualenv dh-python
+chroot /var/chroot/buildroot apt_install -y --no-install-recommends python3-stdeb python3-setuptools python3-setuptools-scm dh-virtualenv dh-python
 
 # Bootstrap pipx with pipx
 chroot /var/chroot/buildroot python3 -m venv /tmp/bootstrap_pipx

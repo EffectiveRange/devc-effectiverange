@@ -1,0 +1,14 @@
+Acquire::Retries "5";
+
+# Don’t hang forever
+Acquire::http::Timeout "20";
+Acquire::https::Timeout "20";
+
+# GitHub runners sometimes have flaky IPv6 routes
+Acquire::ForceIPv4 "true";
+
+# Avoid gzip corruption edge cases
+Acquire::CompressionTypes::Order { "gz"; "xz"; };
+
+# Be tolerant of transient mirror issues
+Acquire::Check-Valid-Until "false";

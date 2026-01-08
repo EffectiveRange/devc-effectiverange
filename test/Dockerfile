@@ -6,7 +6,7 @@ FROM ${BASE_IMAGE_REPO}:${BASE_IMAGE_VER}
 ARG USERNAME
 
 # [Optional] Uncomment this section to install additional packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt install -y sudo
+RUN apt_update && export DEBIAN_FRONTEND=noninteractive && apt_install -y sudo
 
 # Create the user and get ownership of /opt/cross for package installation
 RUN groupadd  --gid 1000 $USERNAME \

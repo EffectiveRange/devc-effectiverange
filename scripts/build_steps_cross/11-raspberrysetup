@@ -18,7 +18,10 @@ Signed-By: /usr/share/keyrings/raspberrypi-archive-keyring.pgp
 EOF
 
 
-curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 https://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /usr/share/keyrings/raspberrypi-archive-keyring.pgp
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 https://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /usr/share/keyrings/raspberrypi-archive-keyring.pgp
+
+# sanity check the keys received
+gpg --show-keys /usr/share/keyrings/raspberrypi-archive-keyring.pgp
 
 # Add high priority
 cat > /etc/apt/preferences.d/rpi << EOF
@@ -32,4 +35,4 @@ EOF
 # setup multiarch by adding current arch to sources list
 # sed -ri "s/^deb (\w+)/deb [arch=$(dpkg --print-architecture)] \1/g" /etc/apt/sources.list
 
-apt update
+apt_update

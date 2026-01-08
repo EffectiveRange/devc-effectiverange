@@ -9,7 +9,11 @@ ARG KEEP_BUILD_ARTIFACTS=FALSE
 ARG TARGET_DIR=NON_EXISTENT_FILE
 ARG BUILD_ARCH=armhf
 
-RUN apt update && apt install -y wget
+COPY apt-ci-hardening /etc/apt/apt.conf.d/99-ci-hardening
+COPY --chmod=0755 retry /usr/local/bin/retry
+COPY --chmod=0755 apt_update /usr/local/bin/apt_update
+COPY --chmod=0755 apt_install /usr/local/bin/apt_install
+RUN apt_update && apt_install -y wget
 
 # Checks if the 'crossbuilder' user exists. 
 RUN if ! id crossbuilder 2>/dev/null;then \

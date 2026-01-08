@@ -11,4 +11,4 @@ source "$(dirname $0)/../build_common"
 rm -vf /etc/apt/sources.list.d/raspi.sources
 rm -vf /etc/apt/preferences.d/rpi
 
-apt update
+apt_update

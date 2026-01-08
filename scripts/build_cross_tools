@@ -17,9 +17,9 @@ trap 'echo FAILED COMMAND: $previous_command' EXIT
 # See: http://preshing.com/20141119/how-to-build-a-gcc-cross-compiler
 #-------------------------------------------------------------------------------------------
 
-apt update
+apt_update
 
-apt install -y nano curl git bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev zlib1g libz-dev rsync build-essential g++ make gawk python3 sed less
+apt_install -y nano curl git bc wget libtool libtool-bin bzip2 xz-utils unzip patch bison flex texinfo help2man python3-dev zlib1g libz-dev rsync build-essential g++ make gawk python3 sed less
 
 mkdir -p /tmp/build
 
@@ -66,14 +66,14 @@ then
 
 rm -rf /tmp/build
 
-apt-get clean 
+apt clean 
 
 if  [ -n "$PACKAGES_TO_REMOVE" ]
 then
-apt-get remove -y $PACKAGES_TO_REMOVE
+apt remove -y $PACKAGES_TO_REMOVE
 fi
 
-apt-get autoremove -y 
+apt autoremove -y 
 
 rm -rf /var/lib/apt/lists/*
 

@@ -13,8 +13,8 @@ source "$(dirname $0)/../build_common"
 echo "nameserver 8.8.8.8" >> /var/chroot/buildroot/etc/resolv.conf
 
 # Install necessary packages
-chroot  /var/chroot/buildroot apt update
-chroot  /var/chroot/buildroot apt install -y gnupg build-essential pkg-config nano wget python3 python3-pip python3-dev 
+chroot  /var/chroot/buildroot apt_update
+chroot  /var/chroot/buildroot apt_install -y gnupg build-essential pkg-config nano wget python3 python3-pip python3-dev 
 
 # Add raspberry pi sources
 cat << EOF > /var/chroot/buildroot/etc/apt/sources.list.d/raspi.sources
@@ -26,18 +26,18 @@ Architectures: ${RPI_APT_ARCH}
 Signed-By: /usr/share/keyrings/raspberrypi-archive-keyring.pgp
 EOF
 
-curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /var/chroot/buildroot/usr/share/keyrings/raspberrypi-archive-keyring.pgp
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /var/chroot/buildroot/usr/share/keyrings/raspberrypi-archive-keyring.pgp
 
 
-chroot  /var/chroot/buildroot apt update
+chroot  /var/chroot/buildroot apt_update
 if [ $DEBOOTSTRAP_TARGET == "bullseye" ]
 then
-    chroot  /var/chroot/buildroot apt install --no-install-recommends -y raspberrypi-kernel-headers 
+    chroot  /var/chroot/buildroot apt_install --no-install-recommends -y raspberrypi-kernel-headers 
 elif [ $DEBOOTSTRAP_TARGET == "bookworm" -o $DEBOOTSTRAP_TARGET == "trixie" ]
 then
     for khdrpkg in "${RPI_KERNEL_HDR_VERSIONS[@]}"
     do
-        chroot  /var/chroot/buildroot apt install --no-install-recommends -y ${khdrpkg}
+        chroot  /var/chroot/buildroot apt_install --no-install-recommends -y ${khdrpkg}
     done
 else
     echo "Unhandled target $DEBOOTSTRAP_TARGET"

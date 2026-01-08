@@ -12,8 +12,11 @@ source /etc/os-release
 
 install -d /usr/share/keyrings
 rm -f /usr/share/keyrings/debian-archive-keys-latest.gpg
-curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc -o /tmp/archive-key-$VERSION_ID.asc
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc -o /tmp/archive-key-$VERSION_ID.asc
 cat /tmp/archive-key-$VERSION_ID.asc | gpg --dearmor  -o /usr/share/keyrings/debian-archive-keys-latest.gpg
+
+# sanity check the keys received
+gpg --show-keys /usr/share/keyrings/debian-archive-keys-latest.gpg
 
 # add backports to sources.list
 cat > /etc/apt/sources.list.d/backports.sources << EOF 
@@ -33,9 +36,12 @@ Components: main
 Signed-By: /usr/share/keyrings/er-keyring.pgp
 EOF
 
-curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://aptrepo.effective-range.com/effectiverange.gpg.key -o /usr/share/keyrings/er-keyring.pgp
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://aptrepo.effective-range.com/effectiverange.gpg.key -o /usr/share/keyrings/er-keyring.pgp
 
-apt update
+# sanity check the keys received
+gpg --show-keys /usr/share/keyrings/er-keyring.pgp
+
+apt_update
 # Setup in chroot as well
 if [ -d /var/chroot/buildroot ]
 then
@@ -62,5 +68,5 @@ EOF
 
   cp -vf /usr/share/keyrings/er-keyring.pgp /var/chroot/buildroot/usr/share/keyrings/er-keyring.pgp
 
-  chroot /var/chroot/buildroot apt update
+  chroot /var/chroot/buildroot apt_update
 fi

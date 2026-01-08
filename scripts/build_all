@@ -20,15 +20,15 @@ then
 . "$ROOT_DIR/packages_$BUILD_ARCH"
 fi
 
-apt-get update && apt-get upgrade -y
+apt_update
 
-apt-get install -y --no-install-recommends $PACKAGES_TO_INSTALL
+apt_install -y --no-install-recommends $PACKAGES_TO_INSTALL
 
 export  $(cat /etc/os-release  | grep VERSION_ID | sed 's/"//g')
 
 if [ "$VERSION_ID" -lt "13" ];
 then
-apt install -y --no-install-recommends lsb-release wget software-properties-common gnupg
+apt_install -y --no-install-recommends lsb-release wget software-properties-common gnupg
 fi
 
 # Install latest clang tooling
@@ -43,7 +43,7 @@ else
 fi
 CLANGD_EXE=$(ls -1 /usr/bin/clangd-* | sort -hr | head -n1)
 LLVM_VERSION=$(echo $CLANGD_EXE | cut -d- -f2)
-apt-get install -y --no-install-recommends clang-format-$LLVM_VERSION
+apt_install -y --no-install-recommends clang-format-$LLVM_VERSION
 # Add in unversioned symlinks for clangd and clang-format
 ln -sfv $CLANGD_EXE /usr/bin/clangd
 ln -sfv /usr/bin/clang-format-$LLVM_VERSION /usr/bin/clang-format
@@ -94,14 +94,14 @@ rm -rf /tmp/build
 if [ "$KEEP_BUILD_ARTIFACTS" == "FALSE" ]
 then
 
-apt-get clean 
+apt clean 
 
 if  [ -n "$PACKAGES_TO_REMOVE" ]
 then
-apt-get remove -y $PACKAGES_TO_REMOVE
+apt remove -y $PACKAGES_TO_REMOVE
 fi
 
-apt-get autoremove -y 
+apt autoremove -y 
 
 rm -rf /var/lib/apt/lists/*
 

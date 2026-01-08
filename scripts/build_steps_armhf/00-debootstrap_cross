@@ -8,7 +8,7 @@ set -Eeuo pipefail
 STEP_DESCRIPTION="Debootstrap buildroot"
 source "$(dirname "$0")/../build_common"
 
-apt-get install -y --no-install-recommends   gpgv gnupg ca-certificates wget
+apt_install -y --no-install-recommends   gpgv gnupg ca-certificates wget
 
 mkdir -p /var/chroot/ /usr/share/keyrings /tmp/dbcache
 rm -rf /var/chroot/buildroot /tmp/dbcache
@@ -42,3 +42,10 @@ then
 fi
 
 chroot /var/chroot/buildroot /debootstrap/debootstrap --second-stage
+
+cp /usr/local/bin/retry /var/chroot/buildroot/usr/local/bin/retry
+cp /usr/local/bin/apt_update /var/chroot/buildroot/usr/local/bin/apt_update
+cp /usr/local/bin/apt_install /var/chroot/buildroot/usr/local/bin/apt
+chmod 0755 /var/chroot/buildroot/usr/local/bin/retry
+chmod 0755 /var/chroot/buildroot/usr/local/bin/apt_update
+chmod 0755 /var/chroot/buildroot/usr/local/bin/apt_install

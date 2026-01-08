@@ -1,0 +1,13 @@
+#!/bin/bash
+n=0 
+max=5 
+delay=2
+until "$@"; do
+    ((n++))
+    if [ "$n" -ge "$max" ]; then
+        echo "Command '$*' failed after $n attempts."
+        exit 1
+    fi
+    sleep $delay
+    delay=$((delay*2))
+done
