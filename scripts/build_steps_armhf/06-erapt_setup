@@ -8,12 +8,19 @@ set -x
 STEP_DESCRIPTION="Setup Effective Range APT repository"
 source "$(dirname $0)/../build_common"
 
+source /etc/os-release
+
+install -d /usr/share/keyrings
+rm -f /usr/share/keyrings/debian-archive-keys-latest.gpg
+curl -fsSL https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc   | gpg --dearmor  -o /usr/share/keyrings/debian-archive-keys-latest.gpg
+
 # add backports to sources.list
 cat > /etc/apt/sources.list.d/backports.sources << EOF 
 Types: deb
 URIs: http://deb.debian.org/debian/
 Suites: $DEBOOTSTRAP_TARGET-backports
 Components: main
+Signed-By: /usr/share/keyrings/debian-archive-keys-latest.gpg
 EOF
 
 # Setup in host container
@@ -41,11 +48,17 @@ Components: main
 Signed-By: /usr/share/keyrings/er-keyring.pgp
 EOF
 
+  install -d /var/chroot/buildroot/usr/share/keyrings
+  rm -f /var/chroot/buildroot/usr/share/keyrings/debian-archive-keys-latest.gpg
+  curl -fsSL https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc   | gpg --dearmor -o /var/chroot/buildroot/usr/share/keyrings/debian-archive-keys-latest.gpg
+
+
   cat > /var/chroot/buildroot/etc/apt/sources.list.d/backports.sources << EOF
 Types: deb
 URIs: http://deb.debian.org/debian/
 Suites: $DEBOOTSTRAP_TARGET-backports
 Components: main
+Signed-By: /usr/share/keyrings/debian-archive-keys-latest.gpg
 EOF
 
   curl -fsSL http://aptrepo.effective-range.com/effectiverange.gpg.key |  tee /var/chroot/buildroot/usr/share/keyrings/er-keyring.pgp > /dev/null
