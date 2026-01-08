@@ -12,7 +12,8 @@ source /etc/os-release
 
 install -d /usr/share/keyrings
 rm -f /usr/share/keyrings/debian-archive-keys-latest.gpg
-curl -fsSL https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc   | gpg --dearmor  -o /usr/share/keyrings/debian-archive-keys-latest.gpg
+curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc -o /tmp/archive-key-$VERSION_ID.asc
+cat /tmp/archive-key-$VERSION_ID.asc | gpg --dearmor  -o /usr/share/keyrings/debian-archive-keys-latest.gpg
 
 # add backports to sources.list
 cat > /etc/apt/sources.list.d/backports.sources << EOF 
@@ -32,8 +33,7 @@ Components: main
 Signed-By: /usr/share/keyrings/er-keyring.pgp
 EOF
 
-curl -fsSL http://aptrepo.effective-range.com/effectiverange.gpg.key |  tee /usr/share/keyrings/er-keyring.pgp > /dev/null
-
+curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://aptrepo.effective-range.com/effectiverange.gpg.key -o /usr/share/keyrings/er-keyring.pgp
 
 apt update
 # Setup in chroot as well
@@ -50,8 +50,7 @@ EOF
 
   install -d /var/chroot/buildroot/usr/share/keyrings
   rm -f /var/chroot/buildroot/usr/share/keyrings/debian-archive-keys-latest.gpg
-  curl -fsSL https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc   | gpg --dearmor -o /var/chroot/buildroot/usr/share/keyrings/debian-archive-keys-latest.gpg
-
+  cat /tmp/archive-key-$VERSION_ID.asc | gpg --dearmor  -o /var/chroot/buildroot/usr/share/keyrings/debian-archive-keys-latest.gpg
 
   cat > /var/chroot/buildroot/etc/apt/sources.list.d/backports.sources << EOF
 Types: deb
@@ -61,7 +60,7 @@ Components: main
 Signed-By: /usr/share/keyrings/debian-archive-keys-latest.gpg
 EOF
 
-  curl -fsSL http://aptrepo.effective-range.com/effectiverange.gpg.key |  tee /var/chroot/buildroot/usr/share/keyrings/er-keyring.pgp > /dev/null
+  cp -vf /usr/share/keyrings/er-keyring.pgp /var/chroot/buildroot/usr/share/keyrings/er-keyring.pgp
 
   chroot /var/chroot/buildroot apt update
 fi

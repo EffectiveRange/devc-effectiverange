@@ -18,7 +18,7 @@ Signed-By: /usr/share/keyrings/raspberrypi-archive-keyring.pgp
 EOF
 
 
-curl -fsSL https://archive.raspberrypi.com/debian/raspberrypi.gpg.key |  tee /usr/share/keyrings/raspberrypi-archive-keyring.pgp > /dev/null
+curl -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 https://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /usr/share/keyrings/raspberrypi-archive-keyring.pgp
 
 # Add high priority
 cat > /etc/apt/preferences.d/rpi << EOF
