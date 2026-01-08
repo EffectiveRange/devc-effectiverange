@@ -14,13 +14,12 @@ RUN apt update && apt install -y wget
 # Checks if the 'crossbuilder' user exists. 
 RUN if ! id crossbuilder 2>/dev/null;then \
     groupadd -g $BUILD_GID crossbuilder && \
-    useradd -d /home/crossbuilder -m -g $BUILD_GID -u $BUILD_UID -s /bin/bash crossbuilder &&\
-    chmod 777 /home/crossbuilder/ \
+    useradd -d /home/crossbuilder -m -g $BUILD_GID -u $BUILD_UID -s /bin/bash crossbuilder \
     ;fi
 COPY --chown=crossbuilder:crossbuilder ./build_tools /home/crossbuilder/build_tools
 COPY --chown=crossbuilder:crossbuilder ./scripts /home/crossbuilder/scripts
 COPY --chown=crossbuilder:crossbuilder $TARGET_DIR /home/crossbuilder/target
-RUN touch /home/crossbuilder/target.$(basename $TARGET_DIR)
+RUN touch /home/crossbuilder/target.$(basename $TARGET_DIR) && chmod 777 /home/crossbuilder/
 
 # Non-interactive configuration of tzdata
 ENV DEBIAN_FRONTEND=noninteractive
