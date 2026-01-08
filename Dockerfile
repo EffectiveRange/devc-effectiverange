@@ -14,7 +14,8 @@ RUN apt update && apt install -y wget
 # Checks if the 'crossbuilder' user exists. 
 RUN if ! id crossbuilder 2>/dev/null;then \
     groupadd -g $BUILD_GID crossbuilder && \
-    useradd -d /home/crossbuilder -m -g $BUILD_GID -u $BUILD_UID -s /bin/bash crossbuilder \
+    useradd -d /home/crossbuilder -m -g $BUILD_GID -u $BUILD_UID -s /bin/bash crossbuilder &&\
+    chmod 777 /home/crossbuilder/ \
     ;fi
 COPY --chown=crossbuilder:crossbuilder ./build_tools /home/crossbuilder/build_tools
 COPY --chown=crossbuilder:crossbuilder ./scripts /home/crossbuilder/scripts
