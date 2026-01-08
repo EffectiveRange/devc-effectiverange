@@ -39,7 +39,7 @@ jobs:
       contents: read
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: install qemu tools
         run: |
           sudo apt update
@@ -59,7 +59,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN  }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             effectiverange/${{ inputs.arch }}-${{ inputs.distro }}-tools-base
