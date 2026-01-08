@@ -8,7 +8,7 @@ STEP_DESCRIPTION="Setting up raspberry repositories"
 source "$(dirname $0)/../build_common"
 
 # Add raspberry pi sources
-cat << EOF > /etc/apt/sources.list.d/raspi.sources
+cat > /etc/apt/sources.list.d/raspi.sources << EOF
 Types: deb-src
 URIs: http://archive.raspberrypi.com/debian/
 Suites: ${DEBOOTSTRAP_TARGET}
@@ -21,7 +21,7 @@ EOF
 curl -fsSL https://archive.raspberrypi.com/debian/raspberrypi.gpg.key |  tee /usr/share/keyrings/raspberrypi-archive-keyring.pgp > /dev/null
 
 # Add high priority
-cat << EOF > /etc/apt/preferences.d/rpi
+cat > /etc/apt/preferences.d/rpi << EOF
 Package: *
 Pin: release o=Raspberry Pi Foundation
 Pin-Priority: 1001

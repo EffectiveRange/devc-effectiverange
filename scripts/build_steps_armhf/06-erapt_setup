@@ -9,7 +9,7 @@ STEP_DESCRIPTION="Setup Effective Range APT repository"
 source "$(dirname $0)/../build_common"
 
 # add backports to sources.list
-echo <<EOF > /etc/apt/sources.list.d/backports.sources 
+cat > /etc/apt/sources.list.d/backports.sources << EOF 
 Types: deb
 URIs: http://deb.debian.org/debian/
 Suites: $DEBOOTSTRAP_TARGET-backports
@@ -18,7 +18,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
 EOF
 
 # Setup in host container
-echo <<EOF > /etc/apt/sources.list.d/er.sources 
+cat > /etc/apt/sources.list.d/er.sources << EOF 
 Types: deb
 URIs: http://aptrepo.effective-range.com
 Suites: $DEBOOTSTRAP_TARGET
@@ -34,7 +34,7 @@ apt update
 if [ -d /var/chroot/buildroot ]
 then
 
-  echo <<EOF > /var/chroot/buildroot/etc/apt/sources.list.d/er.sources
+  cat > /var/chroot/buildroot/etc/apt/sources.list.d/er.sources << EOF
 Types: deb
 URIs: http://aptrepo.effective-range.com
 Suites: $DEBOOTSTRAP_TARGET
@@ -42,7 +42,7 @@ Components: main
 Signed-By: /usr/share/keyrings/er-keyring.pgp
 EOF
 
-  echo <<EOF > /var/chroot/buildroot/etc/apt/sources.list.d/backports.sources
+  cat > /var/chroot/buildroot/etc/apt/sources.list.d/backports.sources << EOF
 Types: deb
 URIs: http://deb.debian.org/debian/
 Suites: $DEBOOTSTRAP_TARGET-backports
