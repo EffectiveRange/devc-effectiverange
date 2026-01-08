@@ -14,7 +14,6 @@ Types: deb
 URIs: http://deb.debian.org/debian/
 Suites: $DEBOOTSTRAP_TARGET-backports
 Components: main
-Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
 EOF
 
 # Setup in host container
@@ -47,7 +46,6 @@ Types: deb
 URIs: http://deb.debian.org/debian/
 Suites: $DEBOOTSTRAP_TARGET-backports
 Components: main
-Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
 EOF
 
   curl -fsSL http://aptrepo.effective-range.com/effectiverange.gpg.key |  tee /var/chroot/buildroot/usr/share/keyrings/er-keyring.pgp > /dev/null
