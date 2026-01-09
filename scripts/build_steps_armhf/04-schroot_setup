@@ -26,7 +26,7 @@ Architectures: ${RPI_APT_ARCH}
 Signed-By: /usr/share/keyrings/raspberrypi-archive-keyring.pgp
 EOF
 
-curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /var/chroot/buildroot/usr/share/keyrings/raspberrypi-archive-keyring.pgp
+retry curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 8 --retry-all-errors --retry-delay 1 http://archive.raspberrypi.com/debian/raspberrypi.gpg.key -o /var/chroot/buildroot/usr/share/keyrings/raspberrypi-archive-keyring.pgp
 
 
 chroot  /var/chroot/buildroot apt_update
