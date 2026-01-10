@@ -124,31 +124,14 @@ jobs:
         uses: actions/checkout@v6
       - name: Release
         uses: softprops/action-gh-release@v2
-      - uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.REPO_PROPAGATE_APP_ID }}
-          private-key: ${{ secrets.REPO_PROPAGATE_KEY }}
-          repositories: devc-effectiverange-baseoverlay
-      - name: Dispatch repository event
-        env:
-          TOKEN: ${{ steps.app-token.outputs.token }}
-          ORG: ${{ github.repository_owner }}
-          REPO: ${{ github.repository }}
-          DOWNSTREAM_REPO: devc-effectiverange-baseoverlay
-          VERSION: ${{ github.ref_name }}   
-        run: |
-          set -euo pipefail
-          payload=$(jq -n \
-            --arg et "${REPO}" \
-            --arg ver "${VERSION}" \
-            '{event_type: $et, client_payload: { version: $ver }}')
-          resp=$(curl -fSsL \
-            -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${ORG}/${DOWNSTREAM_REPO}/dispatches" \
-            -d "${payload}")
-          printf '%s\n' "$resp"
 
+  dispatch_downstream:
+    name: Dispatch downstream repo
+    needs: create_release
+    uses: EffectiveRange/ci-workflows/.github/workflows/repository-dispatch.yaml@v1_repodispatch
+    secrets: inherit
+    with:
+      downstream_repo: devc-effectiverange-baseoverlay
+      event_type: ${{ github.repository }}
+      version: ${{ github.ref_name }}    
 
