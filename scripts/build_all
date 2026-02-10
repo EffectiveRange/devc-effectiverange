@@ -31,6 +31,9 @@ then
 apt_install -y --no-install-recommends lsb-release wget software-properties-common gnupg
 fi
 
+# Workaround for LLVM signing issue: https://github.com/llvm/llvm-project/issues/179148
+if [ "$VERSION_ID" -lt "13" ];
+then
 # Install latest clang tooling
 wget -O - https://apt.llvm.org/llvm.sh > /tmp/llvm.sh 
 chmod +x /tmp/llvm.sh 
@@ -48,7 +51,17 @@ apt_install -y --no-install-recommends clang-format-$LLVM_VERSION
 ln -sfv $CLANGD_EXE /usr/bin/clangd
 ln -sfv /usr/bin/clang-format-$LLVM_VERSION /usr/bin/clang-format
 ln -sfv /usr/bin/clang-format-diff-$LLVM_VERSION /usr/bin/clang-format-diff
-
+else
+# In native devc install all clang and llvm packages
+if [ $HOST_ARCH == $BUILD_ARCH ];then
+  apt_install -y --no-install-recommends \
+    clang lldb lld clangd clang-format clang-tidy clang-format clang-tools llvm-dev lld lldb llvm-19-tools \
+    libomp-dev libc++-dev libc++abi-dev libclang-common-19-dev libclang-dev libclang-cpp-dev liblldb-dev \
+    libunwind-19-dev libclang-rt-dev libpolly-19-dev
+else
+  apt_install -y --no-install-recommends clang lldb lld clangd clang-format
+fi
+fi
 
 # Install latest stable CMake 
 wget -O - https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.sh > /tmp/cmake_install.sh
