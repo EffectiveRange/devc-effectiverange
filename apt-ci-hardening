@@ -12,3 +12,7 @@ Acquire::CompressionTypes::Order { "gz"; "xz"; };
 
 # Be tolerant of transient mirror issues
 Acquire::Check-Valid-Until "false";
+Acquire::http::Pipeline-Depth "0";
+Acquire::Queue-Mode "access";
+Acquire::http::No-Cache "true";
+Acquire::http::No-Store "true";
