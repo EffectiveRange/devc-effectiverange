@@ -27,6 +27,9 @@ Components: main
 Signed-By: /usr/share/keyrings/debian-archive-keys-latest.gpg
 EOF
 
+apt install -y mtr
+mtr -rw aptrepo.effective-range.com
+
 # Setup in host container
 cat > /etc/apt/sources.list.d/er.sources << EOF 
 Types: deb
