@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+REPO_HOST="aptrepo.effective-range.com"
+
+DNS_RESULT=$(getent hosts "$REPO_HOST")
+if [ -z "$DNS_RESULT" ]; then
+  echo "[ERROR] DNS resolution failed for $REPO_HOST" >&2
+  exit 1
+else
+  echo "[INFO] DNS resolution for $REPO_HOST: $DNS_RESULT"
+  REPO_IP=$(echo "$DNS_RESULT" | awk '{print $1}')
+fi
+
+ROUTE_RESULT=$(ip route get "$REPO_IP" 2>&1)
+if [ $? -ne 0 ]; then
+  echo "[ERROR] No route to host $REPO_HOST ($REPO_IP)" >&2
+  echo "$ROUTE_RESULT"
+  exit 2
+else
+  echo "[INFO] Route to $REPO_HOST ($REPO_IP):"
+  echo "$ROUTE_RESULT"
+fi
+
+KEY_URL="http://$REPO_HOST/effectiverange.gpg.key"
+echo "[INFO] Checking HTTP connectivity to $KEY_URL..."
+if ! wget --spider --timeout=10 --tries=2 "$KEY_URL"; then
+  echo "[ERROR] Failed to fetch $KEY_URL" >&2
+  exit 3
+else
+  echo "[INFO] Successfully fetched $KEY_URL"
+fi
+
+echo "[INFO] All connectivity checks passed for $REPO_HOST"
+exit 0

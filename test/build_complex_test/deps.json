@@ -18,6 +18,11 @@
             "libprotobuf32"
         ]
     },
+    "trixie":{
+        "deps":[
+            "libprotobuf32t64"
+        ]
+    },
     "build_deps": [
         "libc6-dev",
         {
