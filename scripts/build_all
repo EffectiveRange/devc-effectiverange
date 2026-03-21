@@ -20,6 +20,8 @@ then
 . "$ROOT_DIR/packages_$BUILD_ARCH"
 fi
 
+apt_check
+
 apt_update
 
 apt_install -y --no-install-recommends $PACKAGES_TO_INSTALL

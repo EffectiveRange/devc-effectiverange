@@ -20,9 +20,9 @@ EOF
 
 # Fetch the latest raspberrypi-archive-keyring .deb and install it
 RPI_KEYRING_URL="https://archive.raspberrypi.com/debian/pool/main/r/raspberrypi-archive-keyring"
-RPI_KEYRING_DEB=$(retry curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 "${RPI_KEYRING_URL}/" \
+RPI_KEYRING_DEB=$(curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 "${RPI_KEYRING_URL}/" \
     | grep -oP 'raspberrypi-archive-keyring_[^"]+_all\.deb' | sort -V | tail -1)
-retry curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 "${RPI_KEYRING_URL}/${RPI_KEYRING_DEB}" -o "/tmp/${RPI_KEYRING_DEB}"
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 "${RPI_KEYRING_URL}/${RPI_KEYRING_DEB}" -o "/tmp/${RPI_KEYRING_DEB}"
 dpkg -i "/tmp/${RPI_KEYRING_DEB}"
 
 # sanity check the keys received

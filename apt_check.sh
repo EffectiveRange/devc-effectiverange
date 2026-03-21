@@ -1,0 +1,49 @@
+#!/bin/bash
+
+REPO_HOST="aptrepo.effective-range.com"
+
+DNS_RESULT=$(getent hosts "$REPO_HOST")
+if [ -z "$DNS_RESULT" ]; then
+  echo "[ERROR] DNS resolution failed for $REPO_HOST" >&2
+  exit 1
+else
+  echo "[INFO] DNS resolution for $REPO_HOST: $DNS_RESULT"
+  REPO_IP=$(echo "$DNS_RESULT" | awk '{print $1}')
+fi
+
+ROUTE_RESULT=$(ip route get "$REPO_IP" 2>&1)
+if [ $? -ne 0 ]; then
+  echo "[ERROR] No route to host $REPO_HOST ($REPO_IP)" >&2
+  echo "$ROUTE_RESULT"
+  exit 2
+else
+  echo "[INFO] Route to $REPO_HOST ($REPO_IP):"
+  echo "$ROUTE_RESULT"
+fi
+
+apt install -y mtr traceroute
+
+echo "[INFO] Running mtr to $REPO_HOST..."
+mtr -rwzc 5 "$REPO_HOST"
+MTR_STATUS=$?
+if [ $MTR_STATUS -ne 0 ]; then
+  echo "[ERROR] mtr failed to reach $REPO_HOST" >&2
+  exit 3
+fi
+
+echo "[INFO] Running traceroute to $REPO_HOST..."
+traceroute "$REPO_HOST"
+TR_STATUS=$?
+if [ $TR_STATUS -ne 0 ]; then
+  echo "[ERROR] traceroute failed to reach $REPO_HOST" >&2
+  exit 4
+fi
+echo "[INFO] Running ping to $REPO_HOST..."
+ping -c 4 "$REPO_HOST"
+if [ $? -ne 0 ]; then
+  echo "[ERROR] ping failed to reach $REPO_HOST" >&2
+  exit 5
+fi
+
+echo "[INFO] All connectivity checks passed for $REPO_HOST"
+exit 0

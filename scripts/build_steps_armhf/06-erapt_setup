@@ -12,7 +12,7 @@ source /etc/os-release
 
 install -d /usr/share/keyrings
 rm -f /usr/share/keyrings/debian-archive-keys-latest.gpg
-retry curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc -o /tmp/archive-key-$VERSION_ID.asc
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 https://ftp-master.debian.org/keys/archive-key-$VERSION_ID.asc -o /tmp/archive-key-$VERSION_ID.asc
 cat /tmp/archive-key-$VERSION_ID.asc | gpg --dearmor  -o /usr/share/keyrings/debian-archive-keys-latest.gpg
 
 # sanity check the keys received
@@ -27,9 +27,6 @@ Components: main
 Signed-By: /usr/share/keyrings/debian-archive-keys-latest.gpg
 EOF
 
-apt install -y mtr
-mtr -rw aptrepo.effective-range.com
-
 # Setup in host container
 cat > /etc/apt/sources.list.d/er.sources << EOF 
 Types: deb
@@ -39,7 +36,7 @@ Components: main
 Signed-By: /usr/share/keyrings/er-keyring.pgp
 EOF
 
-retry curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 http://aptrepo.effective-range.com/effectiverange.gpg.key -o /usr/share/keyrings/er-keyring.pgp
+curl -4 -fSL --connect-timeout 5 --max-time 20 --retry 5 --retry-all-errors --retry-delay 1 http://aptrepo.effective-range.com/effectiverange.gpg.key -o /usr/share/keyrings/er-keyring.pgp
 
 # sanity check the keys received
 gpg --show-keys /usr/share/keyrings/er-keyring.pgp
