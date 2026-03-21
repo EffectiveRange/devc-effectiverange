@@ -11,6 +11,7 @@ ARG BUILD_ARCH=armhf
 
 COPY apt-ci-hardening /etc/apt/apt.conf.d/99-ci-hardening
 COPY --chmod=0755 retry /usr/local/bin/retry
+COPY --chmod=0755 apt_check /usr/local/bin/apt_check
 COPY --chmod=0755 apt_update /usr/local/bin/apt_update
 COPY --chmod=0755 apt_install /usr/local/bin/apt_install
 RUN apt_update && apt_install -y wget
