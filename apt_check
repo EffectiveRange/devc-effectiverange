@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 REPO_HOST="aptrepo.effective-range.com"
 
 DNS_RESULT=$(getent hosts "$REPO_HOST")
@@ -11,6 +13,10 @@ else
   REPO_IP=$(echo "$DNS_RESULT" | awk '{print $1}')
 fi
 
+apt update -y
+
+apt install -y iproute2
+
 ROUTE_RESULT=$(ip route get "$REPO_IP" 2>&1)
 if [ $? -ne 0 ]; then
   echo "[ERROR] No route to host $REPO_HOST ($REPO_IP)" >&2
@@ -21,7 +27,7 @@ else
   echo "$ROUTE_RESULT"
 fi
 
-apt install -y mtr traceroute
+apt install -y mtr
 
 echo "[INFO] Running mtr to $REPO_HOST..."
 mtr -rwzc 5 "$REPO_HOST"
@@ -30,6 +36,8 @@ if [ $MTR_STATUS -ne 0 ]; then
   echo "[ERROR] mtr failed to reach $REPO_HOST" >&2
   exit 3
 fi
+
+apt install -y traceroute iputils-ping
 
 echo "[INFO] Running traceroute to $REPO_HOST..."
 traceroute "$REPO_HOST"
