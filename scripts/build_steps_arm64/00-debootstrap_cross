@@ -22,10 +22,8 @@ fi
 
 
 cp /usr/local/bin/retry /var/chroot/buildroot/usr/local/bin/retry
-cp /usr/local/bin/apt_check /var/chroot/buildroot/usr/local/bin/apt_check
 cp /usr/local/bin/apt_update /var/chroot/buildroot/usr/local/bin/apt_update
 cp /usr/local/bin/apt_install /var/chroot/buildroot/usr/local/bin/apt_install
 chmod 0755 /var/chroot/buildroot/usr/local/bin/retry
-chmod 0755 /var/chroot/buildroot/usr/local/bin/apt_check
 chmod 0755 /var/chroot/buildroot/usr/local/bin/apt_update
 chmod 0755 /var/chroot/buildroot/usr/local/bin/apt_install
