@@ -15,8 +15,6 @@ on:
       - "v*.*.*"
 
 jobs:
-  check-apt-repository:
-    uses: EffectiveRange/ci-workflows/.github/workflows/apt-repository-check.yaml@main
 
   call_build_cross_base-armhf-bookworm:
     uses: ./.github/workflows/docker-image-cross.yml
