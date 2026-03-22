@@ -266,7 +266,6 @@ def install_in_buildroot(args, allDeps):
 
 
 def install_in_hostroot(args, allDeps):
-    run_in_hostroot_with_lock(build_arch, "apt_check")
     install_in_root(build_arch, run_in_hostroot_with_lock, allDeps, side="host")
 
 

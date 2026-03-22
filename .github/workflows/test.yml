@@ -8,6 +8,9 @@ on:
       - reopened
 
 jobs:
+  check-apt-repository:
+    uses: EffectiveRange/ci-workflows/.github/workflows/apt-repository-check.yaml@main
+
   test:
     runs-on: ubuntu-latest
     
