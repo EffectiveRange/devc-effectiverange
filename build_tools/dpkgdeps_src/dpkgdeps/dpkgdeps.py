@@ -281,6 +281,7 @@ def main():
     with traceback_with_variables.printing_exc(
         file_=traceback_with_variables.LoggerAsFile(logger)
     ):
+        run_in_hostroot_with_lock(build_arch, "apt_check")
         deps = read_deps_json_recursive(args, pathlib.Path(args.depfiledir))
         if args.list:
             print(json.dumps(deps, indent=2))
