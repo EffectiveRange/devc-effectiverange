@@ -37,7 +37,13 @@ def pushd(new_dir):
         os.chdir(old_dir)
 
 
-depRe = re.compile(r"(?P<name>[^:]+)(?::(?P<arch>\w+))?(?:=(?P<ver>[\w\.\+-]+))?")
+# the package declaration uses the same debian control file syntax, but with some extensions for hostinstall and arch specification
+# that is the version specifier is a parenthesized part after the package name and an optional arch
+# e.g: somePackage:amd64 (>= 1.2.3), somePackage (>= 1.2.3), somePackage:amd64, somePackage
+# all works
+depRe = re.compile(
+    r"(?P<name>[^:= ]+)(?::(?P<arch>\w+))?(?:\s+\(\s*(?P<ver>[\w\.\+\-\~:><=]+)\s*\))?"
+)
 
 
 def manifest_path(side: str):
@@ -62,7 +68,7 @@ class Dependency:
 
     def specStr(self, arch=True):
         archStr = f":{self.arch}" if self.arch and arch else ""
-        verStr = f"={self.ver}" if self.ver else ""
+        verStr = f" ({self.ver})" if self.ver else ""
         return f"{self.name}{archStr}{verStr}"
 
     def retarget(self, target_arch: str):
@@ -128,9 +134,8 @@ def get_build_deps(deps: dict, arch: str, distro: str):
 
 
 def deb_deps_str(deps: dict, arch: str, distro: str):
-    # TODO: add support for versioning!!!
     pkg_deps, _ = retrieve_deps(deps, arch, distro)
-    d = sorted(d.name for d in pkg_deps)
+    d = sorted(d.specStr(arch=False) for d in pkg_deps)
     return ",".join(d)
 
 
@@ -246,14 +251,12 @@ def persist_install_manifest(pkgs: list[str], *, side: str):
 
 
 def install_in_root(arch: str, runner, allDeps, **kwargs):
-    pkgs = [d.specStr() for d in allDeps]
-    runner(
-        arch, "retry", "apt_update", condition=check_install_manifest(pkgs, **kwargs)
-    )
+    pkgs = [d.specStr(arch=False) for d in allDeps]
+    runner(arch, "apt", "update", condition=check_install_manifest(pkgs, **kwargs))
     runner(
         arch,
-        "retry",
-        "apt_install",
+        "apt",
+        "satisfy",
         "-y",
         *pkgs,
         condition=check_install_manifest(pkgs, **kwargs),
@@ -293,10 +296,11 @@ def main():
             print_deb_deps(deps, args.arch, os_release)
             return
         all_deps = get_all_dependencies(args.arch, os_release, deps)
-        install_in_buildroot(args, all_deps)
-        install_in_hostroot(
-            args, set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
-        )
+        if all_deps:
+            install_in_buildroot(args, all_deps)
+        hostinstall = set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
+        if hostinstall:
+            install_in_hostroot(args, hostinstall)
         if args.arch != build_arch:
             # TODO: factor out build root path as a parameter to script
             run_in_hostroot_with_lock(

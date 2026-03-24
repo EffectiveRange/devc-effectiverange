@@ -13,6 +13,7 @@ COPY apt-ci-hardening /etc/apt/apt.conf.d/99-ci-hardening
 COPY --chmod=0755 retry /usr/local/bin/retry
 COPY --chmod=0755 apt_update /usr/local/bin/apt_update
 COPY --chmod=0755 apt_install /usr/local/bin/apt_install
+COPY --chmod=0755 apt_satisfy /usr/local/bin/apt_satisfy
 RUN apt_update && apt_install -y curl wget iproute2 netcat-openbsd
 RUN wget -O /usr/local/bin/apt_check https://raw.githubusercontent.com/EffectiveRange/infrastructure-configuration/refs/heads/main/aptrepo/repository/check_repo.sh \
     && chmod +x /usr/local/bin/apt_check
