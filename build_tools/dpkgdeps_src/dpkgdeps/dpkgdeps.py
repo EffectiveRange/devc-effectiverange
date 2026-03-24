@@ -252,10 +252,11 @@ def persist_install_manifest(pkgs: list[str], *, side: str):
 
 def install_in_root(arch: str, runner, allDeps, **kwargs):
     pkgs = [d.specStr(arch=False) for d in allDeps]
-    runner(arch, "apt_update", condition=check_install_manifest(pkgs, **kwargs))
+    runner(arch, "apt", "update", condition=check_install_manifest(pkgs, **kwargs))
     runner(
         arch,
-        "apt_satisfy",
+        "apt",
+        "satisfy",
         "-y",
         *pkgs,
         condition=check_install_manifest(pkgs, **kwargs),
