@@ -295,10 +295,11 @@ def main():
             print_deb_deps(deps, args.arch, os_release)
             return
         all_deps = get_all_dependencies(args.arch, os_release, deps)
-        install_in_buildroot(args, all_deps)
-        install_in_hostroot(
-            args, set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
-        )
+        if all_deps:
+            install_in_buildroot(args, all_deps)
+        hostinstall = set(d.retarget(build_arch) for d in all_deps if d.hostinstall)
+        if hostinstall:
+            install_in_hostroot(args, hostinstall)
         if args.arch != build_arch:
             # TODO: factor out build root path as a parameter to script
             run_in_hostroot_with_lock(
